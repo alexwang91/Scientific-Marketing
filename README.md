@@ -1,0 +1,226 @@
+<div align="center">
+
+# Scientific Marketing
+
+**An agent skill collection for causal, AI-assisted marketing decisions.**
+
+<p align="center">
+  <img src="https://img.shields.io/badge/type-agent%20skills-245d7c" alt="Agent skills">
+  <img src="https://img.shields.io/badge/platform-Codex%20%7C%20Claude%20Code%20style-145c3b" alt="Codex and Claude Code style skills">
+  <img src="https://img.shields.io/badge/status-active%20research%20system-6b4e00" alt="Active research system">
+</p>
+
+<p align="center">
+  <a href="#quickstart">Quickstart</a> |
+  <a href="#what-it-does">What it does</a> |
+  <a href="#skill-catalog">Skill catalog</a> |
+  <a href="#how-it-works">How it works</a> |
+  <a href="#when-to-use-it">When to use it</a>
+</p>
+
+</div>
+
+Scientific Marketing turns a product, market, audience, channel, or campaign question into an evidence-labeled marketing plan: traditional marketing structure, AI-assisted insight work, causal personalization, measurement, platform execution, creator procurement, and output quality control.
+
+It is designed for agents that can load local `SKILL.md` files and references on demand.
+
+> **Packaging note:** this repository contains the reusable skills only. Generated examples, local HTML reports, tests, scratch files, and demo outputs are intentionally excluded.
+
+## Quickstart
+
+Clone the repository:
+
+```bash
+git clone https://github.com/alexwang91/Scientific-Marketing.git
+cd Scientific-Marketing
+```
+
+Install into Codex skills on Windows PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
+Copy-Item -Recurse -Force .\skills\* "$env:USERPROFILE\.codex\skills\"
+```
+
+Install into Codex skills on macOS or Linux:
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R skills/* ~/.codex/skills/
+```
+
+Install into a Claude Code style workspace:
+
+```bash
+mkdir -p .claude/skills
+cp -R skills/* .claude/skills/
+```
+
+Then ask your agent:
+
+```text
+Use Scientific Marketing. I have a product, price, selling points, and target country.
+Build a causal marketing plan with audience dimensions, platform activation, KOL options,
+budget split, measurement plan, and execution gates.
+```
+
+## What It Does
+
+| Capability | What the agent should produce |
+|------------|-------------------------------|
+| **Traditional marketing core** | STP, 4P, 5C, funnel, GTM, pricing, CRM, channel, and brand-equity framing. |
+| **Market and consumer diagnosis** | Category diagnosis, JTBD, user-language extraction, buying triggers, barriers, and substitutes. |
+| **AI marketing intelligence** | Market radar, insight mining, synthetic-consumer hypotheses, creative lab, and agentic operations. |
+| **Causal personalization** | Treatment libraries, uplift/HTE/CATE hypotheses, next-best-treatment, policy gates, holdout design, and platform execution. |
+| **Measurement** | A/B, holdout, geo test, MMM, attribution-vs-incrementality, sample size, guardrails, and launch gates. |
+| **Platform activation** | Google, Amazon Ads, TikTok, Meta, YouTube, retail media, KOL amplification, and retargeting playbooks. |
+| **Creator/KOL procurement** | Country-level creator selection, cost assumptions, usage rights, amplification paths, and causal validation. |
+| **Output quality** | Source-linked HTML reports, evidence labels, assumption registry, stop-slop language checks, and final preflight. |
+
+## How It Works
+
+```text
+User product / market question
+        |
+        v
+scientific-marketing router
+        |
+        +-- traditional marketing and category diagnosis
+        +-- AI marketing intelligence
+        +-- causal personalization and HTE hypothesis map
+        +-- measurement and incrementality design
+        +-- platform / KOL activation playbooks
+        +-- governance and output taste checks
+        |
+        v
+Evidence-labeled marketing artifact
+```
+
+The collection uses progressive disclosure. The top-level router loads only the module needed for the task, then pulls specific references such as platform execution, maturity gates, treatment cards, or HTML output rules when the user request calls for them.
+
+## Skill Catalog
+
+| Skill | Role |
+|-------|------|
+| [`scientific-marketing`](skills/scientific-marketing/SKILL.md) | Main router and operating model. |
+| [`sm-traditional-marketing`](skills/sm-traditional-marketing/SKILL.md) | Stable marketing fundamentals and consumer/category diagnosis. |
+| [`sm-ai-marketing-intelligence`](skills/sm-ai-marketing-intelligence/SKILL.md) | AI-assisted market radar, insight mining, creative lab, and synthetic-consumer hypothesis work. |
+| [`sm-causal-personalization`](skills/sm-causal-personalization/SKILL.md) | Core causal engine: treatment cards, HTE, uplift, platform execution, KOL logic, OPE gates, and product-to-market plans. |
+| [`sm-measurement`](skills/sm-measurement/SKILL.md) | Incrementality, experiments, MMM, attribution boundaries, sample size, and guardrails. |
+| [`sm-ai-visibility`](skills/sm-ai-visibility/SKILL.md) | AI search visibility, entity consistency, answer-engine audits, and source authority. |
+| [`sm-governance-red-team`](skills/sm-governance-red-team/SKILL.md) | Privacy, consent, bias, dark-pattern, claim, and sensitive-audience review. |
+| [`sm-output-taste`](skills/sm-output-taste/SKILL.md) | HTML report standards, professional wording, stop-slop rules, Huawei-style language, and final preflight. |
+
+<details>
+<summary><b>Causal personalization reference highlights</b></summary>
+
+| Reference | Why it matters |
+|-----------|----------------|
+| [`49-product-to-market-causal-pipeline.md`](skills/sm-causal-personalization/references/49-product-to-market-causal-pipeline.md) | Full workflow from product input to country/channel/KOL/budget plan. |
+| [`51-causal-hte-hypothesis-map.md`](skills/sm-causal-personalization/references/51-causal-hte-hypothesis-map.md) | Converts product mechanisms and user language into testable HTE hypotheses. |
+| [`54-llm-semantic-prior-hypothesis.md`](skills/sm-causal-personalization/references/54-llm-semantic-prior-hypothesis.md) | Uses LLM semantic priors as hypotheses, not effect estimates. |
+| [`58-maturity-gates.md`](skills/sm-causal-personalization/references/58-maturity-gates.md) | Prevents jumping from strategy directly to CATE, OPE, or bandits. |
+| [`59-treatment-card-and-action-library.md`](skills/sm-causal-personalization/references/59-treatment-card-and-action-library.md) | Forces every paid action into a measurable treatment card. |
+| [`60-experiment-logging-contract.md`](skills/sm-causal-personalization/references/60-experiment-logging-contract.md) | Defines the logs needed for holdouts, OPE, and future policy learning. |
+| [`61-platform-execution-playbooks.md`](skills/sm-causal-personalization/references/61-platform-execution-playbooks.md) | Links budget rows to platform controls, treatment IDs, D dimensions, consumer language, and measurement routes. |
+
+</details>
+
+## Output Pattern
+
+For dense country/channel plans, the suite can guide an agent toward a source-linked HTML report with:
+
+- product and market facts
+- evidence labels
+- assumption registry
+- D-dimension generation logic
+- channel heatmap
+- main-cell explanation
+- reviewer challenge
+- maturity gate
+- treatment cards
+- platform execution playbook
+- budget split
+- KOL procurement table
+- measurement plan
+- source registry
+- verification checklist
+
+The HTML output rule requires readable connection labels. For example, user-facing tables should show `T01 Search open-ear` and `D8 long-wear comfort`, not naked strings like `T01/T02; D7/D8`.
+
+## Evidence Rules
+
+The skills separate:
+
+| Label | Meaning |
+|-------|---------|
+| `Evidence` | Sourced fact, official documentation, stable method, observed data, or experiment. |
+| `Assumption` | Business input, scenario estimate, benchmark, margin, or budget assumption. |
+| `Hypothesis` | Semantic prior, HTE hypothesis, channel fit, creative fit, or unvalidated audience logic. |
+| `Needs test` | A claim that would change budget, targeting, KOL selection, suppression, offer, or scaling. |
+
+Core guardrail:
+
+```text
+Relevance is not incrementality.
+Platform ROAS is not causal proof.
+LLM semantic priors are not CATE.
+```
+
+## When To Use It
+
+Great fit if you need to:
+
+- turn a product, country, and selling point into a launch plan
+- connect audience dimensions to ad-platform controls
+- build a causal personalization workflow before modeling
+- decide what to test, suppress, or scale
+- write source-checkable marketing artifacts
+- avoid treating attribution dashboards as incrementality
+
+Skip it if you only need:
+
+- a short campaign slogan
+- a generic persona exercise
+- platform setup without measurement or source review
+- a final ROI claim without experiment data
+
+## Repository Layout
+
+```text
+skills/
+  scientific-marketing/
+  sm-traditional-marketing/
+  sm-ai-marketing-intelligence/
+  sm-causal-personalization/
+  sm-measurement/
+  sm-ai-visibility/
+  sm-governance-red-team/
+  sm-output-taste/
+```
+
+Generated reports, examples, tests, and local scratch files are excluded from the package.
+
+## Compatibility
+
+| Agent / runtime | Status | Notes |
+|-----------------|:------:|-------|
+| Codex local skills | Supported | Copy `skills/*` into `~/.codex/skills`. |
+| Claude Code style skills | Portable | Copy `skills/*` into `.claude/skills`. |
+| Other `SKILL.md` loaders | Likely portable | Requires support for local skill folders and relative references. |
+
+## Development Notes
+
+- Keep `SKILL.md` files concise and route into `references/`.
+- Add new procedural depth as references, not as README prose.
+- Do not commit generated HTML reports, example outputs, local scans, or test artifacts.
+- Use source links for current facts and official platform docs.
+- Keep technical specs in facts or feed context; translate them into consumer language for ads and keywords.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=alexwang91%2FScientific-Marketing&type=date&legend=top-left">
+  <picture>
+    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=alexwang91/Scientific-Marketing&type=date&legend=top-left" />
+  </picture>
+</a>

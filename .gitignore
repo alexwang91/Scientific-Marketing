@@ -1,0 +1,26 @@
+# Local generated reports and demos
+examples/
+outputs/
+reports/
+dashboards/
+*.html
+
+# Temporary workspace files
+.tmp*/
+tmp/
+temp/
+_repo_scan*/
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Runtime caches
+node_modules/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
