@@ -57,6 +57,7 @@ Load AI, data, and evidence references as needed:
 - `references/59-treatment-card-and-action-library.md` when ads, KOL content, retail media, retargeting, discount, or sales touches need to become measurable actions.
 - `references/60-experiment-logging-contract.md` when a plan needs experiment logs, propensity logs, OPE, policy evaluation, or scaling gates.
 - `references/61-platform-execution-playbooks.md` when budget is assigned to Google, Amazon Ads, TikTok, Meta, YouTube, retail media, KOL amplification, or retargeting.
+- `references/62-contextual-message-and-competitive-frame.md` when a platform, vertical, audience, or selling point needs a content angle, message frame, claim boundary, proof packet, or competitor comparison decision.
 
 ## Guardrail
 
@@ -90,6 +91,7 @@ Return:
 18. Treatment card table when budget is allocated to concrete actions.
 19. Logging contract gaps when future evaluation depends on exposure, propensity, cost, or outcome logs.
 20. Platform execution playbook when budget rows need channel-specific operating guidance.
-21. Next artifact to produce.
+21. Contextual message matrix when a recommendation needs platform-specific, vertical-specific, or competitor-comparison wording.
+22. Next artifact to produce.
 
 Send final prose through `sm-output-taste`.

@@ -4,6 +4,8 @@ outputs/
 reports/
 dashboards/
 *.html
+!skills/**/assets/*.html
+!skills/**/assets/**/*.html
 
 # Temporary workspace files
 .tmp*/
@@ -23,4 +25,3 @@ node_modules/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
-

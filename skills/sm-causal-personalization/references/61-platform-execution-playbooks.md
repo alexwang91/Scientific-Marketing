@@ -8,16 +8,46 @@ Budget allocation must connect to execution controls.
 
 Required bridge:
 
-`budget module -> treatment_id -> D dimension -> platform proxy -> consumer language -> measurement route`
+`budget module -> treatment_id -> D dimension -> platform proxy -> message frame -> consumer language -> measurement route`
 
 If any link is missing, mark the module `Needs data` or `Needs test`.
 
 Connection cells must be readable. Keep IDs for traceability, but always pair them with short names:
 
-- good: `T01 Search open-ear`, `D8 long-wear comfort`, `D31 cart abandon`
+- good: `T01 Search high-intent`, `D18 price-sensitive`, `D31 cart abandon`
 - bad: `T01/T02; D7/D8/D10`
 
 Use small visual tags when the output format supports them.
+
+## Country Local Platform Search
+
+Before recommending local channels for a new country, search the country context. Do not reuse a previous country's platform list.
+
+Find and source:
+
+- top ecommerce marketplaces in the country
+- category-specific retailers and retail media options
+- price comparison, coupon, and deal sites
+- local-language vertical media, review publishers, forums, and communities
+- local creators or KOLs relevant to the product's scenes
+- local-language query patterns for category, use case, price, competitor, and objection terms
+
+Add a local platform to the main plan only when at least one of these is true:
+
+- country popularity: materially used by buyers in that country
+- category relevance: trusted for the product category
+- selling-point fit: can prove, explain, or activate a key selling point
+
+For every added local platform, write the selection basis directly in the platform row or message frame. If the platform is popular but weak for the category or selling point, put it in watch/suppress notes.
+
+Creator/KOL rows need:
+
+- public profile or official page
+- avatar or visual source when available
+- estimated fee range and fee logic
+- country-audience verification requirement
+- average reach or recent post performance requirement
+- usage rights, whitelisting/Spark/paid partnership, UTM, and content reuse terms
 
 ## Consumer Language Rule
 
@@ -36,6 +66,28 @@ Only use the technical term when:
 - the audience is technical or review-driven
 - the platform field is product spec or feed attribute
 - the creative explains the term in plain language
+
+## Message Frame Rule
+
+Use `62-contextual-message-and-competitive-frame.md` when a platform row needs content direction, vertical wording, or competitor comparison.
+
+For each platform execution row, specify:
+
+- buyer question
+- conversation mode
+- competitive comparison level
+- what to say
+- what to avoid
+- proof packet
+- claim boundary
+
+Examples:
+
+- Broad carrier media for a health watch: Level 0-1, social relevance and health awareness, no accuracy superiority claim.
+- Health vertical for a blood pressure watch: Level 3-4, validation method, intended use, accuracy boundary, domain review required.
+- Ecommerce for earbuds: Level 2-4, product proof, reviews, price, delivery, category tradeoff.
+- Search competitor query: Level 3, named competitor only when the query contains competitor intent and claims are sourced.
+- Sales battlecard: Level 4-5, structured proof and current competitor data, internal or reviewed use.
 
 ## Google Search / Shopping / PMax
 
@@ -59,6 +111,7 @@ Report fields:
 - linked treatment IDs
 - keyword clusters
 - negative keyword risks
+- buyer question and comparison level
 - feed asset direction
 - holdout or low-bid control
 
@@ -84,6 +137,7 @@ Report fields:
 - keyword targets
 - product/ASIN targets
 - negative target plan
+- marketplace message frame and proof packet
 - retail metric needed: new-to-brand, attributed sales, spend, CPC, conversion, product detail page views
 
 ## TikTok Ads
@@ -109,6 +163,7 @@ Report fields:
 - creator post or brand post to amplify
 - hook variants
 - target proxy
+- conversation mode and what to avoid
 - linked D dimensions
 - paid amplification rights and UTM
 
@@ -135,6 +190,7 @@ Report fields:
 - custom audience source
 - audience suggestion
 - creative family
+- message frame and comparison level
 - exclusion and frequency plan
 - holdout or geo/time split when feasible
 
@@ -160,6 +216,7 @@ Report fields:
 - video asset
 - audience source
 - proof claim
+- comparison level and proof standard
 - retargeting handoff
 - view, click, search lift, and conversion measurement
 
@@ -178,6 +235,7 @@ Report fields:
 - audience availability
 - reporting fields
 - cost model
+- retail message frame
 - holdout feasibility
 
 ## KOL / Creator Amplification
@@ -194,6 +252,7 @@ Report fields:
 - creator
 - content role
 - amplification platform
+- conversation mode and claim boundary
 - usage rights
 - UTM or promo code
 - holdout or matched comparison
@@ -204,6 +263,7 @@ Report fields:
 - Platform execution section links each row to treatment IDs and D dimensions.
 - Treatment and dimension links show ID plus readable name, not naked IDs.
 - Technical specs are translated into consumer language.
+- Platform rows include message frame, comparison level, what to say, and what to avoid.
 - Official platform docs are listed in the source registry.
 - Platform controls are described as proxies, not causal proof.
 - Measurement route is explicit for each platform.

@@ -6,6 +6,8 @@ Use HTML when the answer contains dense tables, heatmaps, budget scenarios, chan
 
 The HTML report is an audit artifact. It should be readable, printable, source-linked, and clear about what is evidence, assumption, hypothesis, and needs test.
 
+For clickable dashboards, use `interactive-dashboard-output.md` and `../assets/interactive-dashboard-template.html`.
+
 This pattern borrows from taste-skill only where it helps the report: clear hierarchy, disciplined spacing, restrained color, complete sections, and no placeholder output.
 
 ## When To Use
@@ -43,12 +45,13 @@ Every scientific marketing HTML report should include:
 13. Treatment card table when concrete actions receive budget.
 14. Budget allocation with a short execution advice column before status.
 15. Platform execution playbook when the budget uses named platforms or retail media.
-16. Priority plays.
-17. KOL, creator, media, or partner table when relevant.
-18. Measurement plan.
-19. Risk and suppression rules.
-20. Source registry.
-21. Verification checklist.
+16. Contextual message matrix when content, KOL, review, search, ecommerce, retail media, sales, or retargeting actions are recommended.
+17. Priority plays.
+18. KOL, creator, media, or partner table when relevant.
+19. Measurement plan.
+20. Risk and suppression rules.
+21. Source registry.
+22. Verification checklist.
 
 ## Language Rule
 
@@ -207,7 +210,7 @@ Budget table execution advice should be short:
 - linked D dimensions where useful
 - consumer language, not raw technical specs
 - the main measurement route
-- readable labels: do not show naked IDs such as `T01/T02; D7/D8`. Show `ID + short name` in small tags, for example `T01 Search open-ear`, `D8 long-wear comfort`.
+- readable labels: do not show naked IDs such as `T01/T02; D7/D8`. Show `ID + short name` in small tags, for example `T01 Search high-intent`, `D18 price-sensitive`.
 
 Platform execution section should be more detailed and include:
 
@@ -220,6 +223,38 @@ Platform execution section should be more detailed and include:
 - measurement and holdout route
 
 Technical specs may appear in product facts or feed attributes, but consumer-facing search terms and creative must translate specs into buyer language. Example: use "sweat and light rain confidence" or the user's language equivalent for `IP57`, unless the audience is explicitly technical.
+
+## Contextual Message Rule
+
+When the report recommends content, KOL, review, search, ecommerce, retail media, sales, or retargeting actions, add a contextual message matrix after the heatmap or platform execution section and before final budget or priority plays.
+
+Required columns:
+
+- platform or vertical
+- linked audience label
+- linked selling point
+- buyer question
+- conversation mode
+- competitor comparison level
+- what to say
+- what to avoid
+- proof packet
+- format
+- CTA
+- linked treatment ID
+- measurement route
+
+Use `sm-causal-personalization/references/62-contextual-message-and-competitive-frame.md`.
+
+Default comparison levels:
+
+- 0-1 for broad media, carrier, public-interest, or brand trust contexts.
+- 1-3 for search, creator, retargeting, and owned lifecycle.
+- 2-4 for ecommerce, marketplace, and retail media.
+- 3-5 for expert review, technical vertical, B2B sales, RFP, or procurement.
+- 0-4 for health, medical, finance, safety, children, and other sensitive categories, with domain or legal review before strong claims.
+
+Every row must state what to say and what to avoid. Named competitor comparison needs intent, proof, review, and a measurable treatment.
 
 ## HTML Requirements
 
@@ -294,5 +329,6 @@ Before final delivery:
 - Confirm scale recommendations include maturity and logging gates.
 - Confirm platform budget rows include execution advice.
 - Confirm a platform execution section links budget rows to treatment IDs, D dimensions, platform proxies, consumer language, and measurement routes.
+- Confirm contextual message rows include buyer question, comparison level, what to say, what to avoid, proof packet, claim boundary, treatment ID, and measurement route.
 - Confirm connection cells use readable labels, not naked treatment or dimension IDs.
 - Confirm a strategy synthesis follows the heatmap explanation.

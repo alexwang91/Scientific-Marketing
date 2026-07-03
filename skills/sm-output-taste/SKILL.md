@@ -14,6 +14,7 @@ Use this as the final adapter for every scientific marketing answer.
 - `references/professional-language.md` for professional terms vs empty terms.
 - `references/huawei-language.md` for Huawei-style business language.
 - `references/html-report-output.md` when the user asks for HTML, heatmaps, source-checkable reports, dashboards, or shareable reports.
+- `references/interactive-dashboard-output.md` when the user asks for a clickable dashboard, visual cockpit, interactive board, or generating a dashboard from a prior handoff.
 - `references/final-preflight.md` before final delivery.
 
 ## Core Rule
@@ -43,6 +44,7 @@ Output:
 4. Stop-slop pass: remove throat-clearing, fake contrasts, vague business jargon, passive voice, and pull-quote sentences.
 5. Completeness pass: check that every requested deliverable is present. Do not use "and so on", "etc.", or "if you want I can continue" to hide missing work.
 6. HTML report pass when requested: package dense outputs into a readable, printable, source-linked single-file HTML artifact.
+7. Interactive dashboard pass when requested: use the handoff contract and `assets/interactive-dashboard-template.html` to produce a clickable single-file dashboard with a shared `DATA` object.
 
 ## Rewrite Triggers
 
