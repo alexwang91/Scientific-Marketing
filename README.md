@@ -8,12 +8,14 @@
   <img src="https://img.shields.io/badge/type-agent%20skills-245d7c" alt="Agent skills">
   <img src="https://img.shields.io/badge/platform-Codex%20%7C%20Claude%20Code%20style-145c3b" alt="Codex and Claude Code style skills">
   <img src="https://img.shields.io/badge/status-active%20research%20system-6b4e00" alt="Active research system">
+  <img src="https://img.shields.io/badge/license-Apache%202.0-3b3b3b" alt="Apache 2.0 license">
 </p>
 
 <p align="center">
   <a href="#quickstart">Quickstart</a> |
   <a href="#what-it-does">What it does</a> |
   <a href="#skill-catalog">Skill catalog</a> |
+  <a href="#what-the-dashboard-looks-like">Dashboard preview</a> |
   <a href="#how-it-works">How it works</a> |
   <a href="#when-to-use-it">When to use it</a>
 </p>
@@ -150,6 +152,28 @@ For clickable visual dashboards, use [`skills/sm-output-taste/assets/interactive
 
 The HTML output rule requires readable connection labels. For example, user-facing tables should show `T01 Search high-intent` and `D18 price-sensitive`, not naked strings like `T01/T02; D7/D8`.
 
+## What The Dashboard Looks Like
+
+The screenshots below come from a fictional demo dataset (`NORTHLIGHT AQUA`, a made-up hydration tracker in a made-up country) built only to preview the template's layout and interactions — no real product, brand, price, or creator is represented. This is what an agent produces after filling the `DATA` contract with a real product's facts.
+
+**Overview and KPI strip.** One page per decision, not a slide deck. The top strip states budget, guardrail, margin, and price as `Evidence`/`Assumption`-labeled facts; clicking anything anywhere on the page updates the right-hand detail panel through the same view.
+
+![Dashboard overview: KPI strip, selling points, audience dimensions, and platforms, with the right detail panel showing the product summary](docs/screenshots/dashboard-overview.png)
+
+**Relationship graph and platform x audience heatmap.** The causal chain — `Product → Selling Point → Audience → Platform → Message → Treatment → Measurement` — is a clickable, layered path view instead of a tangle of arrows. Below it, the heatmap grades every platform x audience cell `H/T/S/N/A` (main / test / small test / no-spend / suppress); clicking a cell explains the reasoning and the reviewer's counter-argument in the detail panel on the right.
+
+![Relationship graph showing the six decision layers, and a heatmap of platforms by audience dimension with one cell selected and explained in the detail panel](docs/screenshots/dashboard-heatmap.png)
+
+**Budget flow, ROI ranges, and treatment cards.** Budget is shown as it moves from the total into each platform, alongside a planning-assumption ROI range per play — never a single confident ROI number. Every dollar lands on a treatment card with a hypothesis, an audience, a metric, and a named holdout.
+
+![Budget flow bars per platform, a five-play ROI range chart, and treatment cards each carrying a hypothesis, budget, and holdout](docs/screenshots/dashboard-budget.png)
+
+**KOL / creator procurement.** Rows separate what's already sourced (a named creator or media outlet, with a pricing basis to still confirm) from what is not (an unnamed creator pool clearly marked "needs sourcing"), so the plan never quietly implies a real person or rate that hasn't been verified.
+
+![KOL and creator cards showing a sourced creator, a sourced media outlet, and an explicitly unsourced creator pool, each with fit and pricing-basis notes](docs/screenshots/dashboard-kol.png)
+
+Run `node skills/sm-output-taste/assets/validate-dashboard.mjs your-dashboard.html` before delivery — it checks ID cross-references, heatmap shape, budget totals, message completeness, and the asset gate, and fails the build on real errors.
+
 ## Evidence Rules
 
 The skills separate:
@@ -199,9 +223,15 @@ skills/
   sm-ai-visibility/
   sm-governance-red-team/
   sm-output-taste/
+    assets/
+      interactive-dashboard-template.html
+      interactive-dashboard-minimal-data.json
+      validate-dashboard.mjs
+docs/
+  screenshots/
 ```
 
-Generated reports, examples, tests, and local scratch files are excluded from the package.
+Generated reports, examples, tests, and local scratch files are excluded from the package. `docs/screenshots/` is the one exception: illustrative, fictional-data images referenced by this README, not a generated case deliverable.
 
 ## Compatibility
 
