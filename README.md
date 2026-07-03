@@ -20,6 +20,8 @@
   <a href="#when-to-use-it">When to use it</a>
 </p>
 
+<p align="center">English | <a href="README.zh-CN.md">简体中文</a></p>
+
 </div>
 
 Scientific Marketing turns a product, market, audience, channel, or campaign question into an evidence-labeled marketing plan: traditional marketing structure, AI-assisted insight work, causal personalization, measurement, platform execution, creator procurement, and output quality control.
@@ -154,23 +156,23 @@ The HTML output rule requires readable connection labels. For example, user-faci
 
 ## What The Dashboard Looks Like
 
-The screenshots below come from a fictional demo dataset (`NORTHLIGHT AQUA`, a made-up hydration tracker in a made-up country) built only to preview the template's layout and interactions — no real product, brand, price, or creator is represented. This is what an agent produces after filling the `DATA` contract with a real product's facts.
+The screenshots below come from a demo built to preview the template's layout and interactions: an invented product, `NORTHLIGHT AQUA` (an AI-powered smart hydration tracker), placed on a real market layer — Norway. The country, its currency (NOK), its climate context, and its platforms (Google.no, YouTube, Finn.no, Elkjøp, Power, NetOnNet, Komplett, Prisjakt, Meta, TikTok) are real; the product itself, its price, and every creator row are invented. This is the same shape an agent produces after filling the `DATA` contract with a real product's facts — money formatting follows `product.currency` automatically, so the same template renders `€`, `kr`, `$`, or any other code without edits.
 
-**Overview and KPI strip.** One page per decision, not a slide deck. The top strip states budget, guardrail, margin, and price as `Evidence`/`Assumption`-labeled facts; clicking anything anywhere on the page updates the right-hand detail panel through the same view.
+**Overview and KPI strip.** One page per decision, not a slide deck. The top strip states budget, guardrail, margin, and price as `Evidence`/`Assumption`-labeled facts; clicking anything anywhere on the page updates the right-hand detail panel through the same view. The default recommendation is explicit about which parts of the plan are real (Norway's platforms) and which are invented for this preview (the product and its price).
 
-![Dashboard overview: KPI strip, selling points, audience dimensions, and platforms, with the right detail panel showing the product summary](docs/screenshots/dashboard-overview.png)
+![Dashboard overview: KPI strip, selling points, audience dimensions, and platforms, with the right detail panel showing the product summary and budget in NOK](docs/screenshots/dashboard-overview.png)
 
-**Relationship graph and platform x audience heatmap.** The causal chain — `Product → Selling Point → Audience → Platform → Message → Treatment → Measurement` — is a clickable, layered path view instead of a tangle of arrows. Below it, the heatmap grades every platform x audience cell `H/T/S/N/A` (main / test / small test / no-spend / suppress); clicking a cell explains the reasoning and the reviewer's counter-argument in the detail panel on the right.
+**Relationship graph and platform x audience heatmap.** The causal chain — `Product → Selling Point → Audience → Platform → Message → Treatment → Measurement` — is a clickable, layered path view instead of a tangle of arrows. Below it, the heatmap grades every platform x audience cell `H/T/S/N/A` (main / test / small test / no-spend / suppress); clicking a cell explains the reasoning and the reviewer's counter-argument in the detail panel on the right. Two of the seven audience columns here exist specifically to carry the product's AI-powered selling points: an AI hydration coach that adapts reminders to activity and weather instead of a fixed timer, and on-device, privacy-first processing aimed at Nordic-level privacy expectations — each routed to its own small test budget rather than folded into the main message.
 
-![Relationship graph showing the six decision layers, and a heatmap of platforms by audience dimension with one cell selected and explained in the detail panel](docs/screenshots/dashboard-heatmap.png)
+![Relationship graph showing the six decision layers, and a heatmap of platforms by audience dimension with the Search x high-intent-searcher cell selected and explained in the detail panel](docs/screenshots/dashboard-heatmap.png)
 
-**Budget flow, ROI ranges, and treatment cards.** Budget is shown as it moves from the total into each platform, alongside a planning-assumption ROI range per play — never a single confident ROI number. Every dollar lands on a treatment card with a hypothesis, an audience, a metric, and a named holdout.
+**Budget flow, ROI ranges, and treatment cards.** Budget is shown in the product's real currency as it moves from the total into each platform, alongside a planning-assumption ROI range per play — never a single confident ROI number. Every krone lands on a treatment card with a hypothesis, an audience, a metric, and a named holdout; the AI-coach education treatment is explicitly logged as a longer-horizon bet measured by geo-holdout brand-search lift, not last-click ROAS.
 
-![Budget flow bars per platform, a five-play ROI range chart, and treatment cards each carrying a hypothesis, budget, and holdout](docs/screenshots/dashboard-budget.png)
+![Budget flow bars per platform in NOK, a five-play ROI range chart, and treatment cards each carrying a hypothesis, budget, and holdout](docs/screenshots/dashboard-budget.png)
 
-**KOL / creator procurement.** Rows separate what's already sourced (a named creator or media outlet, with a pricing basis to still confirm) from what is not (an unnamed creator pool clearly marked "needs sourcing"), so the plan never quietly implies a real person or rate that hasn't been verified.
+**KOL / creator procurement.** Rows separate what's already sourced (a media-outlet archetype with a pricing basis to still confirm) from what is not (unnamed creator pools clearly marked "needs sourcing") — including a pool sourced specifically for AI/privacy-focused creators, distinct from general tech reviewers, because that audience reacts to a different claim. No real Norwegian creator, outlet, or rate is named or implied anywhere in this demo.
 
-![KOL and creator cards showing a sourced creator, a sourced media outlet, and an explicitly unsourced creator pool, each with fit and pricing-basis notes](docs/screenshots/dashboard-kol.png)
+![KOL and creator cards showing a media-outlet archetype and two explicitly unsourced creator pools, one of them focused on AI and data-privacy content, each with fit and pricing-basis notes](docs/screenshots/dashboard-kol.png)
 
 Run `node skills/sm-output-taste/assets/validate-dashboard.mjs your-dashboard.html` before delivery — it checks ID cross-references, heatmap shape, budget totals, message completeness, and the asset gate, and fails the build on real errors.
 

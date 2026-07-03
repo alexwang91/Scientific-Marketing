@@ -1961,8 +1961,12 @@
       window.setTimeout(updateFromScroll, 180);
     }
 
-    function formatEUR(value) {
-      return "€" + Number(value).toLocaleString("en-US");
+    const currencySymbols = { EUR: "€", USD: "$", GBP: "£", JPY: "¥", CNY: "¥", NOK: "kr ", SEK: "kr ", DKK: "kr " };
+
+    function formatMoney(value) {
+      const currency = DATA.product?.currency || "EUR";
+      const symbol = currencySymbols[currency] || (currency + " ");
+      return symbol + Number(value).toLocaleString("en-US");
     }
 
     function unique(values) {
@@ -2296,7 +2300,7 @@
             <div class="card-top"><span class="card-id">${platform.role}</span>${tagHtml(platform.priority, cls)}</div>
             <div class="card-title platform-title">${logoStrip(platformLogoIds(platform.id))}<span>${platform.name}</span></div>
             <div class="card-desc">${platform.summary}</div>
-            <div class="tag-row">${tagHtml(formatEUR(platform.budget), "main")}${platform.linkedTreatmentIds.map((id) => tagHtml(id)).join("")}</div>
+            <div class="tag-row">${tagHtml(formatMoney(platform.budget), "main")}${platform.linkedTreatmentIds.map((id) => tagHtml(id)).join("")}</div>
           </button>
         `;
       }).join("");
@@ -2450,7 +2454,7 @@
         const cls = b.status.includes("Need") || b.status.includes("待") ? "test" : b.status === "Method" ? "main" : "small";
         return `
           <button class="flow-row ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""}" data-kind="budget" data-id="${b.id}" type="button" aria-label="选择预算 ${b.name}">
-            <div class="amount-block"><strong>${formatEUR(b.amount)}</strong><span>${b.pct}% of test</span></div>
+            <div class="amount-block"><strong>${formatMoney(b.amount)}</strong><span>${b.pct}% of test</span></div>
             <div class="flow-track"><div class="flow-fill" style="width:${Math.max(7, (b.amount / max) * 100)}%"></div></div>
             <div class="flow-meta"><strong>${b.name}</strong><span>${b.treatmentIds.join(" / ")}</span></div>
             <div class="flow-action">${tagHtml(b.status, cls)}</div>
@@ -2492,7 +2496,7 @@
         return `
           <button class="treatment-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
             data-kind="treatment" data-id="${t.id}" data-search="${searchText}" type="button" aria-label="选择 Treatment ${t.id}">
-            <div class="card-top"><span class="card-id">${t.id}</span>${tagHtml(formatEUR(t.budget), "main")}</div>
+            <div class="card-top"><span class="card-id">${t.id}</span>${tagHtml(formatMoney(t.budget), "main")}</div>
             <h3>${t.name}</h3>
             <p class="card-desc">${t.hypothesis}</p>
             <div class="tag-row">${t.platformIds.map((id) => tagHtml(maps.platforms[id]?.name || id)).join("")}</div>
@@ -2625,7 +2629,7 @@
         panel.innerHTML = `
           ${detailHeader("product", DATA.product.name, `${DATA.product.market} - ${DATA.product.category}`)}
           <div class="metric-pair">
-            <div class="metric-box"><span>预算</span><strong>${formatEUR(DATA.product.budget)}</strong></div>
+            <div class="metric-box"><span>预算</span><strong>${formatMoney(DATA.product.budget)}</strong></div>
             <div class="metric-box"><span>放量门槛</span><strong>${DATA.product.scaleThreshold || "Needs data"}</strong></div>
             <div class="metric-box"><span>毛利</span><strong>${DATA.product.grossMargin}</strong></div>
             <div class="metric-box"><span>价格</span><strong>${DATA.product.priceRange}</strong></div>
@@ -2717,7 +2721,7 @@
         panel.innerHTML = `
           ${detailHeader("platform", platform.name, `${platform.role} - ${platform.priority}`)}
           <div class="metric-pair">
-            <div class="metric-box"><span>预算</span><strong>${formatEUR(platform.budget)}</strong></div>
+            <div class="metric-box"><span>预算</span><strong>${formatMoney(platform.budget)}</strong></div>
             <div class="metric-box"><span>角色</span><strong>${platform.role}</strong></div>
           </div>
           <div class="detail-block">
@@ -2751,7 +2755,7 @@
         panel.innerHTML = `
           ${detailHeader("treatment", `${t.id} ${t.name}`, t.format)}
           <div class="metric-pair">
-            <div class="metric-box"><span>预算</span><strong>${formatEUR(t.budget)}</strong></div>
+            <div class="metric-box"><span>预算</span><strong>${formatMoney(t.budget)}</strong></div>
             <div class="metric-box"><span>对照</span><strong>${t.holdout}</strong></div>
           </div>
           <div class="detail-block">
@@ -2784,9 +2788,9 @@
       } else if (selection.kind === "budget") {
         const b = maps.budgets[selection.id];
         panel.innerHTML = `
-          ${detailHeader("budget", b.name, `${b.pct}% of ${formatEUR(DATA.product.budget)}`)}
+          ${detailHeader("budget", b.name, `${b.pct}% of ${formatMoney(DATA.product.budget)}`)}
           <div class="metric-pair">
-            <div class="metric-box"><span>预算</span><strong>${formatEUR(b.amount)}</strong></div>
+            <div class="metric-box"><span>预算</span><strong>${formatMoney(b.amount)}</strong></div>
             <div class="metric-box"><span>状态</span><strong>${b.status}</strong></div>
           </div>
           <div class="detail-block">
