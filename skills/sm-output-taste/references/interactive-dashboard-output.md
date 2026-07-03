@@ -25,6 +25,7 @@ Replace these placeholders:
 - `__DASHBOARD_SUBTITLE__`
 - `__SEARCH_PLACEHOLDER__`
 - `__MARGIN_BADGE__`
+- `__BUDGET_FLOW_TITLE__` (budget section heading, e.g. `€50,000 从预算流到平台、Treatment 和验证`)
 - `__DASHBOARD_FOOTER_NOTE__`
 - `__DASHBOARD_DATA_JSON__`
 - `__KOL_META_JSON__`
@@ -34,7 +35,19 @@ Rules:
 - Put all product, market, price, KOL, logo, source, budget, message, and heatmap content in `__DASHBOARD_DATA_JSON__` and `__KOL_META_JSON__`.
 - Keep the template case-free. Never save generated product-country data back into the template.
 - The template must preserve the current interaction system: View Transition detail-panel update, low-opacity pointer gloss, click confirmation pulse, section reveal, readable heatmap labels, static calm background, and `prefers-reduced-motion`.
-- Validate by replacing `__DASHBOARD_DATA_JSON__` with a minimal object and `__KOL_META_JSON__` with `{}`, then run JavaScript syntax parsing on the inline script.
+- The default (no-selection) lens is derived from data: main/holdout dimensions, main-priority platforms, all treatments and budgets. Override with the optional `DATA.defaultLens` object when a different first view tells the story better.
+- The template UI chrome (navigation, legends, detail-panel headings) ships in Chinese. When the user's language differs, translate those static strings during generation; the placeholder contract does not cover them yet.
+- Validate the generated file with `assets/validate-dashboard.mjs` (see Validation below). `assets/interactive-dashboard-minimal-data.json` is a minimal `DATA` object that passes it and doubles as the smallest working example.
+
+## Validation
+
+Run the bundled validator on the generated dashboard (or on a bare `DATA` JSON file):
+
+```bash
+node skills/sm-output-taste/assets/validate-dashboard.mjs outputs/your-dashboard.html
+```
+
+It checks ID cross-reference integrity across dimensions/sellingPoints/platforms/treatments/budgets/messages/kol, heatmap shape and grades, budget sums against `product.budget`, message completeness, the Asset Gate, leftover `__PLACEHOLDER__` strings, and inline-script syntax. Fix every ERROR before delivery; treat WARN lines as a review checklist.
 
 ## Country Local Platform Discovery
 
@@ -100,6 +113,13 @@ Rules:
 - For media packages, use the media logo as the avatar and label the row as media.
 - For unnamed creator pools, use a neutral labeled placeholder and say the real candidate photos must be sourced before procurement.
 - Do not omit images silently. If an image cannot be found or downloaded, show a placeholder and explain the missing asset in `avatarSource` or the source registry.
+
+Network-restricted fallback (when the agent environment blocks image downloads):
+
+1. Inline exact SVG marks as data URIs for brands whose geometry is public and unambiguous (play button, camera glyph, pharmacy cross). These always render.
+2. Reference remote favicon URLs (site favicon or a favicon service) for the rest. They load when the user opens the file with internet access.
+3. Fill `DATA.assets.fallback` with `{ logoId: ["2-4 char text", "#brandColor"] }`. The template's built-in `onerror` chain swaps any failed logo `<img>` for a brand-color letter badge and any failed KOL avatar for the neutral placeholder (using `kolMeta[id].initials`), so nothing renders as a broken image.
+4. State in `assets.note` and in `avatarSource` which images are remote and what still needs local caching before formal delivery.
 
 ## Heatmap Label Gate
 
@@ -210,11 +230,52 @@ A prior report or handoff should provide this data. If a field is missing, gener
       "measurement": ""
     }
   ],
-  "treatments": [],
-  "budgets": [],
-  "heatmapColumns": [],
-  "heatmapRows": [],
-  "plays": [],
+  "treatments": [
+    {
+      "id": "T01",
+      "name": "",
+      "hypothesis": "",
+      "message": "",
+      "audienceIds": [],
+      "platformIds": [],
+      "sellingPointIds": [],
+      "budget": 0,
+      "metric": "",
+      "format": "",
+      "holdout": "",
+      "risks": []
+    }
+  ],
+  "budgets": [
+    {
+      "id": "B01",
+      "name": "",
+      "amount": 0,
+      "pct": 0,
+      "status": "Method|Needs test",
+      "treatmentIds": [],
+      "platformIds": [],
+      "audienceIds": [],
+      "rationale": "",
+      "action": ""
+    }
+  ],
+  "heatmapColumns": ["D1"],
+  "heatmapRows": [
+    { "platformId": "", "grades": ["H|T|S|N|A per column, same length as heatmapColumns"] }
+  ],
+  "plays": [
+    {
+      "id": "P01",
+      "name": "",
+      "budget": "",
+      "cac": "",
+      "roiMin": 0.0,
+      "roiMax": 0.0,
+      "platformIds": [],
+      "audienceIds": []
+    }
+  ],
   "kol": [
     {
       "id": "",
@@ -232,11 +293,62 @@ A prior report or handoff should provide this data. If a field is missing, gener
       "treatmentIds": []
     }
   ],
-  "tasks": [],
-  "reviewerChallenges": [],
-  "sources": []
+  "tasks": [
+    {
+      "id": "TK01",
+      "task": "",
+      "owner": "",
+      "platformIds": [],
+      "treatmentIds": [],
+      "status": "",
+      "timing": "",
+      "evidence": "Evidence|Assumption|Hypothesis|Needs test"
+    }
+  ],
+  "reviewerChallenges": [
+    { "id": "RC01", "target": "", "challenge": "", "response": "", "evidence": "" }
+  ],
+  "sources": [
+    { "id": "S01", "title": "", "url": "", "usedFor": "" }
+  ],
+  "kpis": [
+    ["label", "value", "note with evidence tag"]
+  ],
+  "kolMeta": {
+    "K01": {
+      "profileUrl": "",
+      "avatar": "",
+      "avatarSource": "",
+      "initials": "2-char fallback shown when the avatar fails to load",
+      "logoIds": [],
+      "pricingBasis": "",
+      "verify": ["optional per-KOL pre-procurement checklist"]
+    }
+  },
+  "assets": {
+    "basePath": "",
+    "icons": { "logoId": "file path, https URL, or data URI" },
+    "fallback": { "logoId": ["2-4 char text", "#brandColor"] },
+    "platformLogoDefaults": {},
+    "messageLogoDefaults": {},
+    "note": ""
+  }
 }
 ```
+
+Optional root fields the template also reads:
+
+- `defaultLens`: overrides the derived no-selection highlight set (same shape as a relations object: `sellingPointIds`, `audienceIds`, `platformIds`, `treatmentIds`, `budgetIds`, `messageIds`, `kolIds`).
+- `measurementLabel`: name of the measurement node in the graph and detail panel; defaults to `Holdout + UTM + Gross Margin`.
+- `measurementHoldouts`, `measurementRules`: lists for the measurement detail panel; generic defaults apply when absent.
+- `kolVerifyDefault`: default pre-procurement checklist when a KOL row has no `verify` list.
+- `product.defaultRecommendation`, `product.nextStepCards`: overview detail-panel content; generic defaults apply when absent.
+
+Field notes:
+
+- `messageContexts[].format` is the canonical field; the template also accepts legacy `contentFormat`.
+- `kpis` rows are `[label, value, note]` tuples, not objects.
+- `budgets[].amount` values must sum to `product.budget`; treatment budgets should too.
 
 ## Contextual Message Rule
 
@@ -363,6 +475,7 @@ Interaction polish:
 - Treatment cards are clickable.
 - Right detail panel changes after selection.
 - Script passes a JavaScript syntax check.
+- `node assets/validate-dashboard.mjs <file>` reports 0 errors.
 - Scan for banned slop phrases before delivery.
 
 ## Recommended File Name

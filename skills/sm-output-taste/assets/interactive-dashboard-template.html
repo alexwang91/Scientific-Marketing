@@ -244,6 +244,71 @@
       }
     }
 
+    /* Keep anchor targets clear of the sticky command header (~92px + 10px offset). */
+    .section {
+      scroll-margin-top: 112px;
+    }
+
+    .top-command {
+      scroll-margin-top: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .section {
+        scroll-margin-top: 164px;
+      }
+    }
+
+    .kpi-card strong,
+    .amount-block strong,
+    .metric-box strong,
+    .roi-label {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .heatmap-scroll,
+    .graph-wrap,
+    .entity-list,
+    .detail-panel {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(36, 93, 124, 0.28) transparent;
+    }
+
+    .heatmap-scroll::-webkit-scrollbar,
+    .graph-wrap::-webkit-scrollbar,
+    .entity-list::-webkit-scrollbar,
+    .detail-panel::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .heatmap-scroll::-webkit-scrollbar-thumb,
+    .graph-wrap::-webkit-scrollbar-thumb,
+    .entity-list::-webkit-scrollbar-thumb,
+    .detail-panel::-webkit-scrollbar-thumb {
+      background: rgba(36, 93, 124, 0.24);
+      border-radius: 999px;
+    }
+
+    .heatmap-scroll::-webkit-scrollbar-thumb:hover,
+    .graph-wrap::-webkit-scrollbar-thumb:hover,
+    .entity-list::-webkit-scrollbar-thumb:hover,
+    .detail-panel::-webkit-scrollbar-thumb:hover {
+      background: rgba(36, 93, 124, 0.42);
+    }
+
+    .entity-card:active,
+    .graph-node:active,
+    .heat-button:active,
+    .flow-row:active,
+    .treatment-card:active,
+    .kol-card:active,
+    .message-row:active,
+    .task-row:active {
+      transform: scale(0.985);
+      transition-duration: 80ms;
+    }
+
     .app-shell {
       position: relative;
       z-index: 1;
@@ -710,6 +775,16 @@
       flex: 0 0 auto;
     }
 
+    .logo-fb {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font: 700 9px/1 var(--font-mono);
+      padding: 0;
+      border: none;
+    }
+
     .platform-title,
     .message-title {
       display: flex;
@@ -844,7 +919,7 @@
     }
 
     .heatmap-table {
-      min-width: 1700px;
+      min-width: 100%;
       background: var(--color-surface);
     }
 
@@ -925,7 +1000,7 @@
     }
 
     .heat-cell {
-      width: 86px;
+      min-width: 86px;
       height: 46px;
       padding: 4px;
       text-align: center;
@@ -1665,7 +1740,7 @@
         <div class="section-header">
           <div>
             <div class="eyebrow">BUDGET FLOW</div>
-            <h2>€20,000 从预算流到平台、Treatment 和验证</h2>
+            <h2>__BUDGET_FLOW_TITLE__</h2>
             <p class="section-kicker">预算按试投比例分配。绿色偏主投，橙色偏验证，红色只用于风险控制。</p>
           </div>
           <span class="tag main">__MARGIN_BADGE__</span>
@@ -1732,7 +1807,7 @@
           <div>
             <div class="eyebrow">SOURCES</div>
             <h2>来源和平台文档</h2>
-            <p class="section-kicker">看板引用 locked audit report 的来源注册表。正式投放前需要重新检查价格、库存、广告平台可用功能和 KOL 报价。</p>
+            <p class="section-kicker">看板引用来源报告的来源注册表。正式投放前需要重新检查价格、库存、广告平台可用功能和 KOL 报价。</p>
           </div>
         </div>
         <div class="source-grid" id="sourceMount"></div>
@@ -1767,39 +1842,38 @@
     };
 
     const assetBase = DATA.assets?.basePath || "";
-    const platformLogoDefaults = {
-      google: ["google"],
-      shopping: ["google"],
-      amazon: ["amazon"],
-      retail: ["mediaworld", "unieuro", "euronics", "eprice"],
-      tiktok_meta: ["tiktok", "instagram"],
-      youtube: ["youtube", "hdblog", "smartworld"],
-      kol: ["instagram", "youtube"],
-      retarget: ["google", "instagram"]
-    };
-    const messageLogoDefaults = {
-      MC01: ["google"],
-      MC02: ["google"],
-      MC03: ["amazon"],
-      MC04: ["mediaworld", "unieuro", "euronics", "eprice"],
-      MC05: ["tiktok", "instagram"],
-      MC06: ["youtube", "hdblog", "smartworld", "hwupgrade", "dday", "tuttoandroid"],
-      MC07: ["instagram", "youtube"],
-      MC08: ["google", "instagram"],
-      MC09: ["trovaprezzi", "idealo"],
-      MC10: ["hdblog", "hwupgrade", "smartworld", "tuttoandroid"],
-      MC11: ["amazon", "ebay", "eprice"]
-    };
+    const platformLogoDefaults = DATA.assets?.platformLogoDefaults || {};
+    const messageLogoDefaults = DATA.assets?.messageLogoDefaults || {};
+    const measurementLabel = DATA.measurementLabel || "Holdout + UTM + Gross Margin";
     const kolMeta = DATA.kolMeta || __KOL_META_JSON__;
 
     function assetUrl(file) {
       return `${assetBase}${file}`;
     }
 
+    const logoFallback = DATA.assets?.fallback || {};
+
+    function logoFail(el, id) {
+      const [text, color] = logoFallback[id] || [String(id).slice(0, 2).toUpperCase(), "#667085"];
+      const span = document.createElement("span");
+      span.className = "mini-logo logo-fb";
+      span.style.background = color;
+      span.textContent = text;
+      el.replaceWith(span);
+    }
+
+    function avatarFail(el, initials) {
+      const span = document.createElement("span");
+      span.className = "kol-avatar placeholder";
+      span.setAttribute("aria-hidden", "true");
+      span.textContent = initials;
+      el.replaceWith(span);
+    }
+
     function logoImg(id, label = id) {
       const file = DATA.assets?.icons?.[id];
       if (!file) return "";
-      return `<img class="mini-logo" src="${assetUrl(file)}" alt="${label} logo" loading="lazy">`;
+      return `<img class="mini-logo" src="${assetUrl(file)}" alt="${label} logo" loading="lazy" onerror="logoFail(this,'${id}')">`;
     }
 
     function logoStrip(ids = []) {
@@ -1920,21 +1994,22 @@
       if (kind === "budget") return maps.budgets[id]?.name || id;
       if (kind === "message") return maps.messages[id]?.vertical || id;
       if (kind === "kol") return maps.kol[id]?.name || id;
-      if (kind === "measurement") return "Holdout + UTM + Gross Margin";
+      if (kind === "measurement") return measurementLabel;
       return id || "未选择";
     }
 
     function getRelations(selection) {
       if (!selection) {
-        return {
-          sellingPointIds: ["SP1", "SP2", "SP3", "SP7"],
-          audienceIds: ["D7", "D8", "D10", "D18", "D19", "D21", "D24", "D31"],
-          platformIds: ["google", "shopping", "amazon", "youtube", "retarget"],
-          treatmentIds: ["T01", "T02", "T03", "T04", "T06"],
-          budgetIds: ["B01", "B02", "B05", "B06", "B07"],
+        const derived = {
+          sellingPointIds: DATA.sellingPoints.map((sp) => sp.id),
+          audienceIds: DATA.dimensions.filter((d) => d.status === "main" || d.status === "holdout").map((d) => d.id),
+          platformIds: DATA.platforms.filter((p) => p.priority === "main").map((p) => p.id),
+          treatmentIds: DATA.treatments.map((t) => t.id),
+          budgetIds: DATA.budgets.map((b) => b.id),
           messageIds: DATA.messageContexts.map((m) => m.id),
           kolIds: []
         };
+        return { ...derived, ...(DATA.defaultLens || {}) };
       }
 
       if (selection.kind === "combination") {
@@ -1989,7 +2064,7 @@
           treatmentIds: platform.linkedTreatmentIds,
           budgetIds: DATA.budgets.filter((b) => b.platformIds.includes(selection.id)).map((b) => b.id),
           messageIds: DATA.messageContexts.filter((m) => m.platformIds.includes(selection.id)).map((m) => m.id),
-          kolIds: DATA.kol.filter((k) => platform.id === "kol" || (platform.id === "tiktok_meta" && k.treatmentIds.includes("T05"))).map((k) => k.id)
+          kolIds: DATA.kol.filter((k) => k.treatmentIds.some((id) => platform.linkedTreatmentIds.includes(id))).map((k) => k.id)
         };
       }
 
@@ -2024,7 +2099,7 @@
         return {
           sellingPointIds: unique(k.audienceIds.flatMap((id) => maps.dimensions[id]?.sellingPointIds || [])),
           audienceIds: k.audienceIds,
-          platformIds: ["kol", "tiktok_meta", "youtube"],
+          platformIds: unique(k.treatmentIds.flatMap((id) => maps.treatments[id]?.platformIds || [])),
           treatmentIds: k.treatmentIds,
           budgetIds: DATA.budgets.filter((b) => b.treatmentIds.some((id) => k.treatmentIds.includes(id))).map((b) => b.id),
           messageIds: DATA.messageContexts.filter((m) => m.treatmentIds.some((id) => k.treatmentIds.includes(id)) || m.audienceIds.some((id) => k.audienceIds.includes(id))).map((m) => m.id),
@@ -2048,8 +2123,8 @@
       if (selection.kind === "measurement") {
         return {
           sellingPointIds: DATA.sellingPoints.map((sp) => sp.id),
-          audienceIds: ["D7", "D8", "D18", "D19", "D21", "D31", "D34"],
-          platformIds: ["google", "shopping", "amazon", "youtube", "kol", "retarget"],
+          audienceIds: DATA.dimensions.map((d) => d.id),
+          platformIds: DATA.platforms.map((p) => p.id),
           treatmentIds: DATA.treatments.map((t) => t.id),
           budgetIds: DATA.budgets.map((b) => b.id),
           messageIds: DATA.messageContexts.map((m) => m.id),
@@ -2246,7 +2321,7 @@
         { title: "PLATFORM", items: DATA.platforms.map((p) => ({ kind: "platform", id: p.id, label: p.name, meta: p.role })) },
         { title: "MESSAGE", items: DATA.messageContexts.map((m) => ({ kind: "message", id: m.id, label: m.vertical, meta: `Level ${m.comparisonLevel}` })) },
         { title: "TREATMENT", items: DATA.treatments.map((t) => ({ kind: "treatment", id: t.id, label: t.name, meta: t.id })) },
-        { title: "MEASUREMENT", items: [{ kind: "measurement", id: "M01", label: "Holdout + UTM + Gross Margin", meta: "incrementality" }] }
+        { title: "MEASUREMENT", items: [{ kind: "measurement", id: "M01", label: measurementLabel, meta: "incrementality" }] }
       ];
       const relations = getRelations(state.selection);
       document.getElementById("graphColumns").innerHTML = columns.map((col, index) => `
@@ -2310,10 +2385,11 @@
       });
       const countH = DATA.heatmapRows.flatMap((r) => r.grades).filter((g) => g === "H").length;
       const countT = DATA.heatmapRows.flatMap((r) => r.grades).filter((g) => g === "T").length;
+      const suppressDims = DATA.dimensions.filter((d) => d.status === "suppress").map((d) => d.id);
       document.getElementById("heatSummary").innerHTML = [
         tagHtml(`${countH} 个主投格`, "main"),
         tagHtml(`${countT} 个测试格`, "test"),
-        tagHtml("D34 只做压制监控", "suppress")
+        suppressDims.length ? tagHtml(`${suppressDims.join(" / ")} 只做压制监控`, "suppress") : ""
       ].join("");
       updateHeatmapSelection();
     }
@@ -2436,7 +2512,7 @@
         const meta = kolMeta[k.id] || {};
         const searchText = `${k.id} ${k.type} ${k.name} ${k.range} ${k.reason} ${k.fit} ${meta.pricingBasis || ""}`;
         const avatar = meta.avatar
-          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy">`
+          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy" onerror="avatarFail(this,'${meta.initials || k.id.replace("K", "")}')">`
           : `<span class="kol-avatar placeholder" aria-hidden="true">${k.id.replace("K", "")}</span>`;
         return `
           <button class="kol-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
@@ -2772,7 +2848,7 @@
         const k = maps.kol[selection.id];
         const meta = kolMeta[k.id] || {};
         const avatar = meta.avatar
-          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy">`
+          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy" onerror="avatarFail(this,'${meta.initials || k.id.replace("K", "")}')">`
           : `<span class="kol-avatar placeholder" aria-hidden="true">${k.id.replace("K", "")}</span>`;
         panel.innerHTML = `
           ${detailHeader("kol", k.name, k.type)}
@@ -2793,7 +2869,7 @@
           </div>
           <div class="detail-block">
             <div class="detail-block-title">采购前必须要</div>
-            ${listItems(["意大利受众占比截图", "近 10 条内容平均观看或触达", "授权范围和付费放大权限", "UTM 和链接位置"])}
+            ${listItems(meta.verify || DATA.kolVerifyDefault || ["目标国家受众占比截图", "近 10 条内容平均观看或触达", "授权范围和付费放大权限", "UTM 和链接位置"])}
           </div>
           <div class="detail-block">
             <div class="detail-block-title">公开主页 / 头像来源</div>
@@ -2839,7 +2915,7 @@
         `;
       } else if (selection.kind === "measurement") {
         panel.innerHTML = `
-          ${detailHeader("measurement", "Holdout + UTM + Gross Margin", "incrementality guardrail")}
+          ${detailHeader("measurement", measurementLabel, "incrementality guardrail")}
           <div class="metric-pair">
             <div class="metric-box"><span>主指标</span><strong>incremental CAC</strong></div>
             <div class="metric-box"><span>放量线</span><strong>${DATA.product.scaleThreshold || "Needs data"}</strong></div>
@@ -2850,11 +2926,11 @@
           </div>
           <div class="detail-block">
             <div class="detail-block-title">需要对照的地方</div>
-            ${listItems(["品牌词低出价或 holdout", "Amazon Sponsored Products 低强度对照", "Retargeting proof / soft incentive / no-touch 三组", "KOL paid amplification holdout"])}
+            ${listItems(DATA.measurementHoldouts || ["品牌词低出价或 holdout", "核心电商广告位低强度对照", "Retargeting 证据 / 激励 / 无触达分组对照", "KOL 付费放大 holdout"])}
           </div>
           <div class="detail-block">
             <div class="detail-block-title">决策规则</div>
-            ${listItems([`${DATA.product.scaleThreshold || "增量 CAC 护栏达标"} 时加预算`, "CAC 高于单台毛利安全线且没有长期价值证据时暂停扩量", "D34 广告疲劳出现 hide、负反馈或频次过高时降触达"])}
+            ${listItems(DATA.measurementRules || [`${DATA.product.scaleThreshold || "增量 CAC 护栏达标"} 时加预算`, "CAC 高于单台毛利安全线且没有长期价值证据时暂停扩量", "广告疲劳出现 hide、负反馈或频次过高时降触达"])}
           </div>
           <div class="detail-block">
             <div class="detail-block-title">连接 Treatment</div>
