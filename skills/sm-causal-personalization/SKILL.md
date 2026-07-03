@@ -15,6 +15,8 @@ This is the primary module of the Scientific Marketing suite. Other modules are 
 
 ## Read References
 
+`references/INDEX.md` maps tasks to files when the lists below are too much to scan.
+
 Start with:
 
 - `references/29-core-module-charter.md` for scope, build order, and hard dependencies.

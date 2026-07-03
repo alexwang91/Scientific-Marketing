@@ -1,0 +1,197 @@
+{
+  "product": {
+    "name": "Example Product",
+    "category": "Example category",
+    "market": "Example market",
+    "budget": 10000,
+    "currency": "EUR",
+    "grossMargin": "30% (Assumption)",
+    "priceRange": "€100 - €120",
+    "maturity": "first launch",
+    "scaleThreshold": "incremental CAC guardrail met"
+  },
+  "measurementLabel": "Holdout + UTM + Gross Margin",
+  "dimensions": [
+    {
+      "id": "D1", "name": "High-intent searchers", "cn": "高意向搜索人群", "status": "main", "priority": 1,
+      "proxy": "category search terms", "logic": "Users already comparing options convert with the least friction.",
+      "objection": "Search volume may be too small to spend the allocated budget.",
+      "sellingPointIds": ["SP1"], "treatmentIds": ["T01"]
+    },
+    {
+      "id": "D2", "name": "Ad-fatigued cohort", "cn": "广告疲劳人群(压制)", "status": "suppress", "priority": 3,
+      "proxy": "frequency > 6 in 7 days with negative feedback", "logic": "Suppression target, not an acquisition audience.",
+      "objection": "None — monitor that frequency caps trigger in time.",
+      "sellingPointIds": [], "treatmentIds": ["T02"]
+    }
+  ],
+  "sellingPoints": [
+    {
+      "id": "SP1", "name": "Core differentiating claim",
+      "consumerLanguage": ["Buyer-language phrasing of the claim"],
+      "proofNeeded": ["Certification or third-party evidence"],
+      "formats": ["Search ad", "Landing page evidence module"],
+      "linkedAudienceIds": ["D1"], "linkedPlatformIds": ["search"], "linkedTreatmentIds": ["T01"]
+    }
+  ],
+  "platforms": [
+    {
+      "id": "search", "name": "Search Ads", "logoIds": ["search"], "role": "High-intent capture",
+      "budget": 8000, "priority": "main",
+      "summary": "Captures users already searching the category.",
+      "execute": "Brand + category + comparison campaigns; keep a 5% brand-term holdout.",
+      "consumerLanguage": "Ad copy in the buyer's own words.",
+      "risk": "Brand-term conversions would partly happen organically.",
+      "metric": "incremental CAC vs holdout",
+      "docs": [], "linkedTreatmentIds": ["T01"], "linkedSellingPointIds": ["SP1"]
+    },
+    {
+      "id": "retarget", "name": "Retargeting", "logoIds": [], "role": "Guardrail conversion",
+      "budget": 2000, "priority": "main",
+      "summary": "Warm visitors have the lowest marginal acquisition cost.",
+      "execute": "Frequency-capped sequences with a 10% no-touch control group.",
+      "consumerLanguage": "Evidence recap for visitors who did not buy.",
+      "risk": "Over-frequency creates negative sentiment.",
+      "metric": "incremental CAC, unsubscribe/negative-feedback rate",
+      "docs": [], "linkedTreatmentIds": ["T02"], "linkedSellingPointIds": ["SP1"]
+    }
+  ],
+  "messageContexts": [
+    {
+      "id": "MC01", "platformIds": ["search"], "logoIds": ["search"], "audienceIds": ["D1"],
+      "sellingPointIds": ["SP1"], "treatmentIds": ["T01"], "vertical": "Search",
+      "buyerQuestion": "Which option should I pick?",
+      "mode": "High-intent capture", "comparisonLevel": "2",
+      "say": "Answer the buyer question with the core claim and its proof.",
+      "avoid": "No unverifiable superiority claims.",
+      "proofPacket": "Certification link + independent review",
+      "format": "Responsive search ad", "cta": "See the evidence",
+      "claimBoundary": "Only claims backed by the proof packet.",
+      "measurement": "incremental CAC vs brand-term holdout"
+    },
+    {
+      "id": "MC02", "platformIds": ["retarget"], "logoIds": [], "audienceIds": ["D1"],
+      "sellingPointIds": ["SP1"], "treatmentIds": ["T02"], "vertical": "Retargeting",
+      "buyerQuestion": "Why should I come back now?",
+      "mode": "Guardrail conversion", "comparisonLevel": "1",
+      "say": "Re-present the strongest proof to deep visitors who did not buy.",
+      "avoid": "No fake urgency countdowns.",
+      "proofPacket": "Evidence summary screenshot",
+      "format": "Display + social remarketing", "cta": "Review the product",
+      "claimBoundary": "Frequency cap of 4 per 7 days.",
+      "measurement": "incremental CAC vs 10% no-touch group"
+    }
+  ],
+  "treatments": [
+    {
+      "id": "T01", "name": "Search high-intent capture",
+      "hypothesis": "Evidence-first landing pages convert comparison searchers at acceptable incremental CAC.",
+      "message": "Core claim answered with proof on the first screen.",
+      "audienceIds": ["D1"], "platformIds": ["search"], "budget": 8000,
+      "metric": "incremental CAC vs holdout", "format": "RSA + evidence landing page",
+      "holdout": "5% brand-term low-bid holdout",
+      "sellingPointIds": ["SP1"],
+      "risks": ["Brand terms convert organically; without a holdout the ad contribution is overstated."]
+    },
+    {
+      "id": "T02", "name": "Retargeting guardrail",
+      "hypothesis": "Warm visitors convert at materially lower CAC than cold traffic.",
+      "message": "Proof recap for evidence-page visitors; availability note for cart abandoners.",
+      "audienceIds": ["D1", "D2"], "platformIds": ["retarget"], "budget": 2000,
+      "metric": "incremental CAC, negative-feedback rate", "format": "Display + social remarketing",
+      "holdout": "10% no-touch control group",
+      "sellingPointIds": ["SP1"],
+      "risks": ["Over-frequency in a sensitive category amplifies negative sentiment."]
+    }
+  ],
+  "budgets": [
+    {
+      "id": "B01", "name": "Search", "amount": 8000, "pct": 80, "status": "Method",
+      "treatmentIds": ["T01"], "platformIds": ["search"], "audienceIds": ["D1"],
+      "rationale": "Highest-certainty conversions closest to purchase.",
+      "action": "Launch campaign structure with the brand-term holdout before scaling."
+    },
+    {
+      "id": "B02", "name": "Retargeting", "amount": 2000, "pct": 20, "status": "Method",
+      "treatmentIds": ["T02"], "platformIds": ["retarget"], "audienceIds": ["D1", "D2"],
+      "rationale": "Protects the ROI floor at the lowest marginal cost.",
+      "action": "Set frequency caps and the no-touch control before launch."
+    }
+  ],
+  "heatmapColumns": ["D1", "D2"],
+  "heatmapRows": [
+    { "platformId": "search", "grades": ["H", "A"] },
+    { "platformId": "retarget", "grades": ["T", "A"] }
+  ],
+  "plays": [
+    {
+      "id": "P01", "name": "Search capture", "budget": "€8,000", "cac": "€40-70",
+      "roiMin": 0.2, "roiMax": 0.8, "platformIds": ["search"], "audienceIds": ["D1"]
+    },
+    {
+      "id": "P02", "name": "Retargeting", "budget": "€2,000", "cac": "€20-40",
+      "roiMin": 0.5, "roiMax": 1.2, "platformIds": ["retarget"], "audienceIds": ["D1"]
+    }
+  ],
+  "kol": [
+    {
+      "id": "K01", "type": "Creator pool (unnamed)", "name": "Category creator pool — needs sourcing",
+      "range": "Needs quote", "reason": "Third-party proof content for the core claim.",
+      "pricingBasis": "Per-candidate: audience country share, average reach, usage rights.",
+      "fit": "T01 proof material", "profileUrl": "", "avatar": "", "avatarSource": "Neutral placeholder — candidates not sourced yet.",
+      "logoIds": [], "audienceIds": ["D1"], "treatmentIds": ["T01"]
+    }
+  ],
+  "kolMeta": {
+    "K01": { "profileUrl": "", "avatar": "", "avatarSource": "Neutral placeholder — candidates not sourced yet.", "logoIds": [], "pricingBasis": "Needs sourcing first.", "initials": "01" }
+  },
+  "tasks": [
+    {
+      "id": "TK01", "task": "Lock UTM + treatment_id logging", "owner": "Data",
+      "platformIds": [], "treatmentIds": ["T01"], "status": "必须先做", "timing": "Week 0",
+      "evidence": "Needs test"
+    }
+  ],
+  "reviewerChallenges": [
+    {
+      "id": "RC01", "target": "D1 High-intent searchers",
+      "challenge": "Search volume may be too thin to absorb 80% of the budget.",
+      "response": "Cap daily spend until impression share data confirms headroom.",
+      "evidence": "Needs test"
+    }
+  ],
+  "sources": [
+    { "id": "S01", "title": "Official product page", "url": "https://example.com/product", "usedFor": "Price and specification reference" }
+  ],
+  "kpis": [
+    ["Budget", "€10,000", "Test period (Assumption)"],
+    ["Gross margin", "30%", "Business input (Assumption)"],
+    ["CAC guardrail", "≤ €70", "Safety margin (Assumption)"]
+  ],
+  "assets": {
+    "basePath": "",
+    "icons": {
+      "search": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNSIgZmlsbD0iIzI0NWQ3YyIvPjxjaXJjbGUgY3g9IjEwLjUiIGN5PSIxMC41IiByPSI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjgiLz48cGF0aCBkPSJNMTQgMTRsNSA1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4="
+    },
+    "fallback": {
+      "search": ["SE", "#245d7c"]
+    },
+    "note": "Replace with real platform icons (inline SVG or cached files). Remote URLs degrade to assets.fallback letter badges via the template's onerror chain."
+  },
+  "defaultLens": null,
+  "kolVerifyDefault": [
+    "Target-country audience share screenshot",
+    "Average views/reach of the last 10 posts",
+    "Usage rights and paid amplification permission",
+    "UTM and link placement terms"
+  ],
+  "measurementHoldouts": [
+    "Brand-term low-bid holdout",
+    "Retargeting no-touch control group"
+  ],
+  "measurementRules": [
+    "Scale budget only when the incremental CAC guardrail holds",
+    "Pause scaling when CAC exceeds the unit-margin safety line without long-term value evidence",
+    "Reduce reach when ad fatigue shows hides, negative feedback, or excess frequency"
+  ]
+}
