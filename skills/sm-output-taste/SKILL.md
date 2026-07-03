@@ -1,6 +1,6 @@
 ---
 name: sm-output-taste
-description: Final output quality gate for scientific marketing. Removes AI-sounding prose, generic consulting language, vague business jargon, fake sophistication, and incomplete outputs while preserving professional marketing, causal inference, AI, and Huawei-style business vocabulary when it carries method.
+description: Final output quality gate for scientific marketing. Use this before delivering Scientific Marketing outputs, HTML reports, source-checkable reports, campaign plans, causal measurement plans, or executive-ready marketing artifacts. Removes AI-sounding prose, generic consulting language, vague business jargon, fake sophistication, and incomplete outputs while preserving professional marketing, causal inference, AI, and Huawei-style business vocabulary when it carries method.
 ---
 
 # SM Output Taste
@@ -9,13 +9,13 @@ Use this as the final adapter for every scientific marketing answer.
 
 ## Read References
 
-- `output-adapter-contract.md` for the input, process, and output interface.
-- `stop-slop.md` for prose cleanup.
-- `professional-language.md` for professional terms vs empty terms.
-- `huawei-language.md` for Huawei-style business language.
-- `html-report-output.md` when the user asks for HTML, heatmaps, source-checkable reports, dashboards, or shareable reports.
-- `interactive-dashboard-output.md` when the user asks for a clickable dashboard, visual cockpit, interactive board, or generating a dashboard from a prior handoff.
-- `final-preflight.md` before final delivery.
+- `references/output-adapter-contract.md` for the input, process, and output interface.
+- `references/stop-slop.md` for prose cleanup.
+- `references/professional-language.md` for professional terms vs empty terms.
+- `references/huawei-language.md` for Huawei-style business language.
+- `references/html-report-output.md` when the user asks for HTML, heatmaps, source-checkable reports, dashboards, or shareable reports.
+- `references/interactive-dashboard-output.md` when the user asks for a clickable dashboard, visual cockpit, interactive board, or generating a dashboard from a prior handoff.
+- `references/final-preflight.md` before final delivery.
 
 ## Core Rule
 

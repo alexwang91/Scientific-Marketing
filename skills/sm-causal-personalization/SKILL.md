@@ -1,6 +1,6 @@
 ---
 name: sm-causal-personalization
-description: "Design AI-assisted causal personalization for marketing: treatment libraries, uplift, CATE, HTE, persuadables, sure things, lost causes, sleeping dogs, next-best-treatment, contextual bandits, policy learning, holdouts, and incremental value."
+description: Design AI-assisted causal personalization for marketing: treatment libraries, uplift, CATE, HTE, persuadables, sure things, lost causes, sleeping dogs, next-best-treatment, contextual bandits, policy learning, holdouts, and incremental value. Use this whenever the user asks about personalization, targeting, offers, lifecycle or CRM actions, audience-treatment fit, platform activation, KOL allocation, product-to-market launch plans, or budget decisions that depend on incremental effect.
 ---
 
 # SM Causal Personalization
@@ -17,47 +17,47 @@ This is the primary module of the Scientific Marketing suite. Other modules are 
 
 Start with:
 
-- `29-core-module-charter.md` for scope, build order, and hard dependencies.
-- `30-causal-personalization.md` for the core frame.
-- `36-execution-blueprint.md` for project phases and deliverables.
-- `49-product-to-market-causal-pipeline.md` when the user provides a product, selling points, price, product description, target country, or go-to-market question.
+- `references/29-core-module-charter.md` for scope, build order, and hard dependencies.
+- `references/30-causal-personalization.md` for the core frame.
+- `references/36-execution-blueprint.md` for project phases and deliverables.
+- `references/49-product-to-market-causal-pipeline.md` when the user provides a product, selling points, price, product description, target country, or go-to-market question.
 
 Load execution references as needed:
 
-- `31-uplift-segmentation.md` for persuadable segments.
-- `32-next-best-treatment.md` for action design.
-- `33-contextual-bandit.md` for adaptive allocation.
-- `34-policy-learning.md` for decision policies.
+- `references/31-uplift-segmentation.md` for persuadable segments.
+- `references/32-next-best-treatment.md` for action design.
+- `references/33-contextual-bandit.md` for adaptive allocation.
+- `references/34-policy-learning.md` for decision policies.
 
 Load AI, data, and evidence references as needed:
 
-- `35-ai-role-in-causal-personalization.md` for what AI can and cannot do.
-- `37-data-contract.md` for required logs, fields, and measurement hygiene.
-- `38-reference-map.md` for stable papers, tools, and industrial anchors.
-- `39-output-artifacts.md` for reusable brief, library, experiment, readout, and policy templates.
-- `40-sales-causal-orchestration.md` for research-informed sales and marketing orchestration.
-- `41-research-informed-architecture.md` for the system architecture implied by HTE, past-experiment learning, causal bandits, and sales constraints.
-- `42-platform-audience-activation.md` for mapping causal segments into ad platform and ecommerce bidding controls.
-- `43-creator-kol-causal-procurement.md` for country-level creator/KOL selection, pricing, effect forecast, ROI, and causal validation.
-- `44-audience-taxonomy-and-sizing.md` for 20-dimensional audience definition, platform mapping, country sizing, and reach planning.
-- `45-product-market-semantics.md` for product taxonomy, use-case semantics, ecommerce facets, and product-designed-for targeting.
-- `46-decision-focused-uplift.md` for ranking, constrained allocation, pROCini/Qini evaluation, and experiment-pool CATE assets.
-- `47-ope-surrogates-sequential-inference.md` for large action OPE, LLM treatment embeddings, long-term surrogate value, and anytime-valid monitoring.
-- `48-b2b-sales-causal-system.md` for causal lead scoring, sales intervention, B2B pricing, account experiments, and human-machine routing.
-- `49-product-to-market-causal-pipeline.md` for the full product-to-country activation workflow: product input, audience sizing, treatment design, platform/KOL activation, budget, ROI, and experiment memory.
-- `50-tooling-and-data-connectors.md` for data sources, APIs, planners, creator databases, causal tooling, and which facts require live lookup.
-- `51-causal-hte-hypothesis-map.md` for turning product semantics and selling points into causal mechanisms, HTE dimensions, audience-treatment pairs, and validation designs.
-- `52-label-vector-representation.md` for deciding when to use human-readable labels, embeddings, or both for product semantics, HTE, treatment, OPE, KOL, and retrieval.
-- `53-llm-context-segment-scoring.md` for LLM-based sample scoring of intent, no-intent, reasons, barriers, treatment fit, and sample-level percentages.
-- `54-llm-semantic-prior-hypothesis.md` for scoring treatment-context semantic fit from a person, segment, or account context before forming HTE hypotheses.
-- `55-llm-semantic-prior-rubric.md` for high, medium, low, unknown scoring rules for semantic fit, relevance, resistance, confidence, causal role, and action.
-- `56-llm-semantic-prior-scenarios.md` for worked examples and boundary patterns.
-- `57-semantic-prior-calibration.md` for human-label, experiment, holdout, and probability calibration of semantic priors.
-- `58-maturity-gates.md` before recommending CATE, OPE, contextual bandit, policy learning, or automated allocation.
-- `59-treatment-card-and-action-library.md` when ads, KOL content, retail media, retargeting, discount, or sales touches need to become measurable actions.
-- `60-experiment-logging-contract.md` when a plan needs experiment logs, propensity logs, OPE, policy evaluation, or scaling gates.
-- `61-platform-execution-playbooks.md` when budget is assigned to Google, Amazon Ads, TikTok, Meta, YouTube, retail media, KOL amplification, or retargeting.
-- `62-contextual-message-and-competitive-frame.md` when a platform, vertical, audience, or selling point needs a content angle, message frame, claim boundary, proof packet, or competitor comparison decision.
+- `references/35-ai-role-in-causal-personalization.md` for what AI can and cannot do.
+- `references/37-data-contract.md` for required logs, fields, and measurement hygiene.
+- `references/38-reference-map.md` for stable papers, tools, and industrial anchors.
+- `references/39-output-artifacts.md` for reusable brief, library, experiment, readout, and policy templates.
+- `references/40-sales-causal-orchestration.md` for research-informed sales and marketing orchestration.
+- `references/41-research-informed-architecture.md` for the system architecture implied by HTE, past-experiment learning, causal bandits, and sales constraints.
+- `references/42-platform-audience-activation.md` for mapping causal segments into ad platform and ecommerce bidding controls.
+- `references/43-creator-kol-causal-procurement.md` for country-level creator/KOL selection, pricing, effect forecast, ROI, and causal validation.
+- `references/44-audience-taxonomy-and-sizing.md` for 20-dimensional audience definition, platform mapping, country sizing, and reach planning.
+- `references/45-product-market-semantics.md` for product taxonomy, use-case semantics, ecommerce facets, and product-designed-for targeting.
+- `references/46-decision-focused-uplift.md` for ranking, constrained allocation, pROCini/Qini evaluation, and experiment-pool CATE assets.
+- `references/47-ope-surrogates-sequential-inference.md` for large action OPE, LLM treatment embeddings, long-term surrogate value, and anytime-valid monitoring.
+- `references/48-b2b-sales-causal-system.md` for causal lead scoring, sales intervention, B2B pricing, account experiments, and human-machine routing.
+- `references/49-product-to-market-causal-pipeline.md` for the full product-to-country activation workflow: product input, audience sizing, treatment design, platform/KOL activation, budget, ROI, and experiment memory.
+- `references/50-tooling-and-data-connectors.md` for data sources, APIs, planners, creator databases, causal tooling, and which facts require live lookup.
+- `references/51-causal-hte-hypothesis-map.md` for turning product semantics and selling points into causal mechanisms, HTE dimensions, audience-treatment pairs, and validation designs.
+- `references/52-label-vector-representation.md` for deciding when to use human-readable labels, embeddings, or both for product semantics, HTE, treatment, OPE, KOL, and retrieval.
+- `references/53-llm-context-segment-scoring.md` for LLM-based sample scoring of intent, no-intent, reasons, barriers, treatment fit, and sample-level percentages.
+- `references/54-llm-semantic-prior-hypothesis.md` for scoring treatment-context semantic fit from a person, segment, or account context before forming HTE hypotheses.
+- `references/55-llm-semantic-prior-rubric.md` for high, medium, low, unknown scoring rules for semantic fit, relevance, resistance, confidence, causal role, and action.
+- `references/56-llm-semantic-prior-scenarios.md` for worked examples and boundary patterns.
+- `references/57-semantic-prior-calibration.md` for human-label, experiment, holdout, and probability calibration of semantic priors.
+- `references/58-maturity-gates.md` before recommending CATE, OPE, contextual bandit, policy learning, or automated allocation.
+- `references/59-treatment-card-and-action-library.md` when ads, KOL content, retail media, retargeting, discount, or sales touches need to become measurable actions.
+- `references/60-experiment-logging-contract.md` when a plan needs experiment logs, propensity logs, OPE, policy evaluation, or scaling gates.
+- `references/61-platform-execution-playbooks.md` when budget is assigned to Google, Amazon Ads, TikTok, Meta, YouTube, retail media, KOL amplification, or retargeting.
+- `references/62-contextual-message-and-competitive-frame.md` when a platform, vertical, audience, or selling point needs a content angle, message frame, claim boundary, proof packet, or competitor comparison decision.
 
 ## Guardrail
 

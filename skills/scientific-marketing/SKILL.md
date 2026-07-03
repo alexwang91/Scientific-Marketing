@@ -1,6 +1,6 @@
 ---
 name: scientific-marketing
-description: Route scientific marketing work across strategy, consumer insight, AI marketing intelligence, causal personalization, measurement, AI visibility, governance, and output taste. Use when the user asks for marketing strategy, GTM, campaign design, positioning, AI marketing, personalization, incrementality, brand visibility in AI answers, or marketing review.
+description: Main router for scientific marketing work across strategy, consumer insight, AI marketing intelligence, causal personalization, measurement, AI visibility, governance, and output taste. Use this whenever the user asks for marketing strategy, GTM, campaign design, positioning, AI marketing, personalization, incrementality, brand visibility in AI answers, marketing review, launch planning, budget allocation, KOL or creator planning, or source-checkable marketing artifacts.
 ---
 
 # Scientific Marketing
