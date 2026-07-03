@@ -146,7 +146,9 @@ For dense country/channel plans, the suite can guide an agent toward a source-li
 - source registry
 - verification checklist
 
-The HTML output rule requires readable connection labels. For example, user-facing tables should show `T01 Search open-ear` and `D8 long-wear comfort`, not naked strings like `T01/T02; D7/D8`.
+For clickable visual dashboards, use [`skills/sm-output-taste/assets/interactive-dashboard-template.html`](skills/sm-output-taste/assets/interactive-dashboard-template.html). The template is case-free and expects agents to inject product, country, price, KOL, logo, heatmap, message, and measurement data through the placeholder contract in [`interactive-dashboard-output.md`](skills/sm-output-taste/references/interactive-dashboard-output.md).
+
+The HTML output rule requires readable connection labels. For example, user-facing tables should show `T01 Search high-intent` and `D18 price-sensitive`, not naked strings like `T01/T02; D7/D8`.
 
 ## Evidence Rules
 

@@ -13,6 +13,7 @@ Pick the smallest module set that can answer the decision. Add modules only when
 | Market opportunity, category, competition | `sm-traditional-marketing` | `sm-ai-marketing-intelligence`, `sm-measurement` |
 | User pain, reviews, JTBD, user language | `sm-traditional-marketing` | `sm-ai-marketing-intelligence` |
 | Positioning, message house, brand codes | `sm-traditional-marketing` | `sm-output-taste` |
+| Platform-specific content angle, vertical wording, competitor comparison | `sm-causal-personalization` | `sm-traditional-marketing`, `sm-governance-red-team` |
 | AI marketing ideas, AI workflow, AI creative | `sm-ai-marketing-intelligence` | `sm-measurement`, `sm-governance-red-team` |
 | Personalization, offers, targeting, next-best-action | `sm-causal-personalization` | `sm-measurement`, `sm-governance-red-team` |
 | Campaign ROI, incrementality, experiment design | `sm-measurement` | `sm-traditional-marketing` |

@@ -18,8 +18,10 @@ Before final output, verify:
 8. Governance risks are named for personalization, nudges, claims, or agents.
 9. The user asked for every module or file, and each item is present.
 10. No "and so on" replaces actual content.
+11. Product-country dashboards use country-local price evidence, or explicitly say the price could not be found.
+12. Dashboard platform logos and KOL/media avatars are present, or missing assets are labeled with source-needed notes.
+13. Heatmap audience labels are readable in the user's language and not only internal D codes.
 
 ## Rewrite Triggers
 
 Rewrite any sentence that could fit any brand. Rewrite any paragraph that sounds polished but does not change a decision.
-

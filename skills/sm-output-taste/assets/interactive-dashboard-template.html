@@ -1,0 +1,2919 @@
+<!doctype html>
+<html lang="__LANG__">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>__DASHBOARD_TITLE__</title>
+  <style>
+    :root {
+      --color-bg: #f3f3f1;
+      --color-surface: rgba(255, 255, 255, 0.72);
+      --color-surface-muted: rgba(247, 247, 245, 0.64);
+      --color-rail: rgba(255, 255, 255, 0.78);
+      --color-rail-soft: rgba(226, 240, 245, 0.82);
+      --color-border: #e8e8e2;
+      --color-border-strong: #d8d8cf;
+      --color-text: #111510;
+      --color-text-muted: #6d7068;
+      --color-text-soft: #9a9d93;
+      --color-primary: #90c050;
+      --color-primary-soft: #dff0c8;
+      --color-primary-strong: #5f8f2f;
+      --color-warning: #ffb060;
+      --color-warning-soft: #ffe2bd;
+      --color-danger: #d85c4a;
+      --color-info: #5b8def;
+      --color-info-soft: #e4ecff;
+      --color-select: #245d7c;
+      --color-select-soft: #e2f0f5;
+      --shadow-panel: 0 18px 45px rgba(20, 24, 18, 0.08);
+      --glass-blur: blur(18px) saturate(130%);
+      --radius-panel: 14px;
+      --radius-card: 8px;
+      --radius-control: 6px;
+      --font-ui: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      --font-mono: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+      --ease-polish: cubic-bezier(0.22, 1, 0.36, 1);
+      --motion-fast: 140ms;
+      --motion-medium: 220ms;
+      --motion-slow: 420ms;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.82), transparent 32%),
+        radial-gradient(circle at 82% 20%, rgba(226, 230, 226, 0.72), transparent 30%),
+        linear-gradient(135deg, #f5f5f2, #e9e9e4 55%, #f7f7f4);
+      color: var(--color-text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      line-height: 1.55;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--color-select);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--color-select);
+      outline-offset: 2px;
+    }
+
+
+    @keyframes detail-panel-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.992); filter: blur(2px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes detail-panel-out {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-4px) scale(0.996); }
+    }
+
+    @keyframes confirm-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(36, 93, 124, 0.18), inset 0 0 0 1px rgba(36, 93, 124, 0.16); }
+      70% { box-shadow: 0 0 0 7px rgba(36, 93, 124, 0), inset 0 0 0 1px rgba(36, 93, 124, 0.22); }
+      100% { box-shadow: 0 0 0 0 rgba(36, 93, 124, 0), inset 0 0 0 0 rgba(36, 93, 124, 0); }
+    }
+
+    @keyframes section-lift-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+
+    ::view-transition-group(detail-panel) {
+      animation-duration: var(--motion-medium);
+      animation-timing-function: var(--ease-polish);
+    }
+
+    ::view-transition-old(detail-panel) {
+      animation: detail-panel-out var(--motion-fast) ease both;
+    }
+
+    ::view-transition-new(detail-panel) {
+      animation: detail-panel-in var(--motion-medium) var(--ease-polish) both;
+    }
+
+    .motion-ready .section {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .motion-ready .section.in-view {
+      animation: section-lift-in var(--motion-slow) var(--ease-polish) both;
+    }
+
+    .nav-link,
+    .kpi-card,
+    .entity-card,
+    .graph-node,
+    .heat-button,
+    .flow-row,
+    .treatment-card,
+    .kol-card,
+    .task-row,
+    .review-row,
+    .source-card,
+    .message-row,
+    .detail-panel {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .kpi-card,
+    .entity-card,
+    .graph-node,
+    .heat-button,
+    .flow-row,
+    .treatment-card,
+    .kol-card,
+    .task-row,
+    .review-row,
+    .source-card,
+    .message-row {
+      overflow: hidden;
+    }
+
+    .nav-link::after,
+    .kpi-card::after,
+    .entity-card::after,
+    .graph-node::after,
+    .heat-button::after,
+    .flow-row::after,
+    .treatment-card::after,
+    .kol-card::after,
+    .task-row::after,
+    .review-row::after,
+    .source-card::after,
+    .message-row::after,
+    .detail-panel::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: -1px;
+      z-index: -1;
+      border-radius: inherit;
+      background: radial-gradient(140px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 62%);
+      opacity: 0;
+      transition: opacity var(--motion-medium) var(--ease-polish);
+    }
+
+    .nav-link:hover::after,
+    .kpi-card:hover::after,
+    .entity-card:hover::after,
+    .graph-node:hover::after,
+    .heat-button:hover::after,
+    .flow-row:hover::after,
+    .treatment-card:hover::after,
+    .kol-card:hover::after,
+    .task-row:hover::after,
+    .review-row:hover::after,
+    .source-card:hover::after,
+    .message-row:hover::after,
+    .detail-panel:hover::after {
+      opacity: 0.8;
+    }
+
+    .entity-card:hover,
+    .graph-node:hover,
+    .flow-row:hover,
+    .treatment-card:hover,
+    .kol-card:hover,
+    .task-row:hover,
+    .review-row:hover,
+    .source-card:hover,
+    .message-row:hover {
+      box-shadow: 0 10px 24px rgba(20, 24, 18, 0.07);
+    }
+
+    .interaction-confirm {
+      animation: confirm-pulse 320ms var(--ease-polish);
+    }
+
+    .detail-panel {
+      view-transition-name: detail-panel;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+
+      .motion-ready .section {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 164px minmax(0, 1fr) minmax(300px, 360px);
+      min-height: 100vh;
+    }
+
+    .left-rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 14px 12px;
+      background: var(--color-rail);
+      color: var(--color-text);
+      border-right: 1px solid rgba(216, 216, 207, 0.76);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: 10px 0 30px rgba(20, 24, 18, 0.04);
+    }
+
+    .brand-mark {
+      display: grid;
+      gap: 4px;
+      padding: 10px 8px 18px;
+      border-bottom: 1px solid rgba(216, 216, 207, 0.72);
+      margin-bottom: 12px;
+    }
+
+    .brand-mark strong {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .brand-mark span {
+      color: var(--color-text-muted);
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-muted);
+      border-radius: var(--radius-control);
+      padding: 9px 8px;
+      text-decoration: none;
+      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--color-rail-soft);
+      color: var(--color-select);
+      text-decoration: none;
+      transform: translateX(2px);
+    }
+
+    .nav-token {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border);
+    }
+
+    .nav-link:hover .nav-token,
+    .nav-link.active .nav-token {
+      background: var(--color-select-soft);
+      color: var(--color-select);
+    }
+
+    .rail-note {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 14px;
+      padding: 10px;
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--color-text-muted);
+      font-size: 11px;
+    }
+
+    .workspace {
+      min-width: 0;
+      padding: 14px 16px 32px;
+    }
+
+    .top-command {
+      position: sticky;
+      top: 10px;
+      z-index: 15;
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(280px, 420px);
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-panel);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: 0 10px 28px rgba(20, 24, 18, 0.06);
+    }
+
+    .title-block {
+      display: grid;
+      gap: 3px;
+    }
+
+    .eyebrow {
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    h3 {
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 760;
+    }
+
+    .subtitle {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .command-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input {
+      height: 38px;
+      width: 100%;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-control);
+      background: var(--color-surface);
+      color: var(--color-text);
+      padding: 0 12px;
+      box-shadow: 0 1px 0 rgba(20, 24, 18, 0.02);
+    }
+
+    .reset-button,
+    .small-button {
+      height: 38px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface);
+      color: var(--color-text);
+      padding: 0 12px;
+      white-space: nowrap;
+    }
+
+    .reset-button:hover,
+    .small-button:hover {
+      border-color: var(--color-select);
+      color: var(--color-select);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-card {
+      min-height: 76px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface);
+      backdrop-filter: var(--glass-blur);
+      padding: 10px;
+      display: grid;
+      align-content: space-between;
+      box-shadow: 0 1px 0 rgba(20, 24, 18, 0.02);
+    }
+
+    .kpi-card span {
+      color: var(--color-text-muted);
+      font-size: 11px;
+    }
+
+    .kpi-card strong {
+      font-size: 18px;
+      line-height: 1.1;
+      font-family: var(--font-mono);
+    }
+
+    .lens-bar {
+      position: relative;
+      top: auto;
+      z-index: 12;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.64);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: 0 4px 14px rgba(20, 24, 18, 0.04);
+      padding: 6px 8px;
+      margin-bottom: 12px;
+    }
+
+    .lens-label {
+      font-family: var(--font-mono);
+      color: var(--color-text-soft);
+      font-size: 11px;
+    }
+
+    .lens-content {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      gap: 7px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .chip,
+    .tag,
+    .grade-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-muted);
+      color: var(--color-text-muted);
+      padding: 2px 7px;
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .chip.select {
+      border-color: #a7c9d8;
+      background: var(--color-select-soft);
+      color: var(--color-select);
+    }
+
+    .tag.main,
+    .grade-h {
+      border-color: #b8d89a;
+      background: #edf8df;
+      color: #3f7427;
+    }
+
+    .tag.test,
+    .grade-t {
+      border-color: #ffd09a;
+      background: #fff0dc;
+      color: #985b12;
+    }
+
+    .tag.small,
+    .grade-s {
+      border-color: #ead6c1;
+      background: #fff6ec;
+      color: #8b6842;
+    }
+
+    .tag.suppress,
+    .grade-a {
+      border-color: #e6aaa0;
+      background: #fff0ee;
+      color: #a43f30;
+    }
+
+    .grade-n {
+      border-color: #d8d8cf;
+      background: #f0f0ec;
+      color: #6d7068;
+    }
+
+    .section {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-panel);
+      background: var(--color-surface);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: var(--shadow-panel);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .section-kicker {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      max-width: 760px;
+      margin-top: 4px;
+    }
+
+    .pivot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pivot-column {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      backdrop-filter: var(--glass-blur);
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .column-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--color-border);
+      background: #fbfbf8;
+    }
+
+    .column-head span {
+      color: var(--color-text-soft);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .entity-list {
+      display: grid;
+      gap: 6px;
+      padding: 8px;
+      max-height: 560px;
+      overflow: auto;
+    }
+
+    .entity-card {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.68);
+      backdrop-filter: var(--glass-blur);
+      color: var(--color-text);
+      padding: 9px;
+      display: grid;
+      gap: 6px;
+      transition: border-color 160ms ease, background 160ms ease, opacity 160ms ease, transform 160ms ease;
+    }
+
+    .entity-card:hover {
+      border-color: var(--color-select);
+      transform: translateY(-1px);
+    }
+
+    .entity-card.selected {
+      border-color: var(--color-select);
+      background: var(--color-select-soft);
+      box-shadow: inset 3px 0 0 var(--color-select);
+    }
+
+    .entity-card.dimmed,
+    .graph-node.dimmed,
+    .flow-row.dimmed,
+    .treatment-card.dimmed,
+    .task-row.dimmed,
+    .message-row.dimmed,
+    .kol-card.dimmed {
+      opacity: 0.34;
+    }
+
+    .entity-card.hidden-by-search,
+    .treatment-card.hidden-by-search,
+    .task-row.hidden-by-search,
+    .message-row.hidden-by-search,
+    .kol-card.hidden-by-search {
+      display: none;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-id {
+      font-family: var(--font-mono);
+      color: var(--color-text-soft);
+      font-size: 11px;
+    }
+
+    .card-title {
+      font-weight: 720;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .card-desc {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .mini-logo {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      padding: 3px;
+      flex: 0 0 auto;
+    }
+
+    .platform-title,
+    .message-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .platform-title .mini-logo,
+    .message-title .mini-logo {
+      width: 24px;
+      height: 24px;
+    }
+
+    .graph-wrap {
+      position: relative;
+      min-height: 430px;
+      overflow: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .graph-canvas {
+      position: relative;
+      min-width: 1080px;
+      min-height: 430px;
+      padding: 12px;
+    }
+
+    .graph-columns {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 118px 144px 168px 144px 158px 158px 132px;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .graph-column {
+      display: grid;
+      gap: 5px;
+      align-content: start;
+      min-height: 402px;
+      border: 1px solid rgba(216, 216, 207, 0.7);
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.48);
+      padding: 8px;
+    }
+
+    .graph-column-title {
+      font-family: var(--font-mono);
+      color: var(--color-text-soft);
+      font-size: 11px;
+      padding: 0 1px 4px;
+      border-bottom: 1px solid rgba(216, 216, 207, 0.72);
+      margin-bottom: 2px;
+    }
+
+    .graph-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+      border-radius: 999px;
+      background: var(--color-select-soft);
+      color: var(--color-select);
+      font-size: 10px;
+    }
+
+    .graph-node {
+      min-height: 34px;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-card);
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--color-text);
+      text-align: left;
+      padding: 6px 7px;
+      display: grid;
+      gap: 3px;
+      transition: border-color 160ms ease, opacity 160ms ease, background 160ms ease;
+    }
+
+    .graph-node.selected {
+      border-color: var(--color-select);
+      background: var(--color-select-soft);
+      box-shadow: inset 3px 0 0 var(--color-select);
+    }
+
+    .node-kind {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-soft);
+    }
+
+    .node-label {
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .heatmap-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .heatmap-scroll {
+      overflow: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      max-height: 640px;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .heatmap-table {
+      min-width: 1700px;
+      background: var(--color-surface);
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0;
+    }
+
+    .heatmap-table th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: #fbfbf8;
+      color: var(--color-text-muted);
+      font-weight: 700;
+      font-size: 11px;
+      text-align: left;
+      vertical-align: bottom;
+    }
+
+    .heatmap-table th:first-child {
+      left: 0;
+      z-index: 5;
+    }
+
+    .heatmap-table td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #fbfbf8;
+      min-width: 158px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .hm-head {
+      width: 86px;
+      min-width: 86px;
+      height: 64px;
+      padding: 7px 6px;
+      display: grid;
+      gap: 2px;
+      align-content: center;
+      text-align: left;
+      line-height: 1.12;
+      cursor: pointer;
+    }
+
+    .hm-head-id {
+      display: block;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--color-text);
+      font-size: 11px;
+    }
+
+    .hm-head-label {
+      display: block;
+      color: var(--color-text-muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .hm-row-label {
+      display: grid;
+      gap: 2px;
+      padding: 9px;
+      cursor: pointer;
+    }
+
+    .hm-row-label span {
+      color: var(--color-text-soft);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .heat-cell {
+      width: 86px;
+      height: 46px;
+      padding: 4px;
+      text-align: center;
+      vertical-align: middle;
+      background: var(--color-surface);
+    }
+
+    .heat-button {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      transition: transform 140ms ease, border-color 140ms ease, opacity 140ms ease;
+    }
+
+    .heat-button:hover {
+      transform: scale(1.04);
+      border-color: var(--color-select);
+    }
+
+    .heat-button.selected {
+      border-color: var(--color-select);
+      box-shadow: 0 0 0 2px var(--color-select-soft);
+    }
+
+    .heat-button.dimmed {
+      opacity: 0.22;
+    }
+
+    .hm-h { background: #dff0c8; color: #376f23; }
+    .hm-t { background: #ffe2bd; color: #8b520f; }
+    .hm-s { background: #fff2e4; color: #8b6842; }
+    .hm-n { background: #eeeeea; color: #7b7e74; }
+    .hm-a { background: #f8d5d0; color: #9c392d; }
+
+    .budget-layout {
+      display: grid;
+      grid-template-columns: minmax(360px, 1.1fr) minmax(300px, 0.9fr);
+      gap: 12px;
+    }
+
+    .flow-board {
+      display: grid;
+      gap: 8px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 140px 120px;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      padding: 8px;
+      transition: opacity 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .flow-row.selected {
+      border-color: var(--color-select);
+      background: var(--color-select-soft);
+    }
+
+    .amount-block {
+      display: grid;
+      gap: 1px;
+    }
+
+    .amount-block strong {
+      font-family: var(--font-mono);
+      font-size: 16px;
+    }
+
+    .amount-block span {
+      color: var(--color-text-soft);
+      font-size: 11px;
+    }
+
+    .flow-track {
+      height: 24px;
+      border-radius: 999px;
+      background: #ebebe5;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      position: relative;
+    }
+
+    .flow-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--color-primary-soft), var(--color-primary));
+      min-width: 22px;
+    }
+
+    .flow-meta {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .flow-meta strong {
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flow-meta span {
+      color: var(--color-text-muted);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flow-action {
+      color: var(--color-text-muted);
+      font-size: 11px;
+    }
+
+    .roi-board {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .roi-row {
+      display: grid;
+      grid-template-columns: 58px 1fr 86px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .roi-scale {
+      position: relative;
+      height: 20px;
+      border-radius: 999px;
+      background: #ebebe5;
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .roi-zero {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 25%;
+      width: 1px;
+      background: rgba(17, 21, 16, 0.28);
+    }
+
+    .roi-range {
+      position: absolute;
+      top: 4px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--color-warning);
+    }
+
+    .roi-range.positive {
+      background: var(--color-primary);
+    }
+
+    .roi-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-align: right;
+    }
+
+    .treatment-grid,
+    .kol-grid,
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .treatment-card,
+    .kol-card,
+    .source-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      backdrop-filter: var(--glass-blur);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      text-align: left;
+      color: var(--color-text);
+      min-width: 0;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      transition: opacity 160ms ease, border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .treatment-card:hover,
+    .kol-card:hover {
+      border-color: var(--color-select);
+      transform: translateY(-1px);
+    }
+
+    .treatment-card.selected,
+    .kol-card.selected {
+      border-color: var(--color-select);
+      background: var(--color-select-soft);
+    }
+
+    .kol-card {
+      grid-template-columns: 74px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .kol-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-card);
+      object-fit: cover;
+      border: 1px solid var(--color-border-strong);
+      background: #ffffff;
+    }
+
+    .kol-avatar.placeholder {
+      display: grid;
+      place-items: center;
+      background: var(--color-select-soft);
+      color: var(--color-select);
+      font: 800 20px var(--font-mono);
+    }
+
+    .kol-body {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .kol-body h3,
+    .kol-body p,
+    .message-proof strong,
+    .message-proof span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .message-row .tag,
+    .kol-card .tag {
+      white-space: normal;
+    }
+
+    .micro-table {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.62);
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .message-table {
+      display: grid;
+      gap: 10px;
+      border: 0;
+      overflow: visible;
+      background: transparent;
+    }
+
+    .task-row,
+    .review-row,
+    .message-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.8fr 0.8fr 1.2fr;
+      gap: 10px;
+      align-items: start;
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+      background: var(--color-surface);
+      text-align: left;
+      width: 100%;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      transition: opacity 160ms ease, background 160ms ease;
+    }
+
+    .task-row:last-child,
+    .review-row:last-child,
+    .message-row:last-child {
+      border-bottom: 0;
+    }
+
+    .task-row:hover,
+    .review-row:hover,
+    .message-row:hover {
+      background: var(--color-select-soft);
+    }
+
+    .message-row.selected {
+      background: var(--color-select-soft);
+      box-shadow: inset 3px 0 0 var(--color-select);
+    }
+
+    .task-row span,
+    .review-row span,
+    .message-row span {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .message-row {
+      grid-template-columns: minmax(210px, 0.78fr) minmax(360px, 1.48fr) minmax(250px, 0.86fr);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      border-bottom: 1px solid var(--color-border);
+      padding: 12px;
+      box-shadow: 0 1px 0 rgba(20, 24, 18, 0.02);
+      overflow: hidden;
+    }
+
+    .message-row:last-child {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .message-meta,
+    .message-brief,
+    .message-proof {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .message-question {
+      font-weight: 740;
+      line-height: 1.35;
+    }
+
+    .message-copy {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .message-copy strong {
+      color: var(--color-text);
+    }
+
+    .message-proof-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      padding: 8px;
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-width: 0;
+      overflow: auto;
+      padding: 14px 14px 20px 0;
+    }
+
+    .detail-panel {
+      min-height: calc(100vh - 28px);
+      min-width: 0;
+      max-width: 100%;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-panel);
+      background: var(--color-surface);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: var(--shadow-panel);
+      padding: 14px;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .detail-panel * {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .detail-title {
+      display: grid;
+      gap: 4px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .detail-title strong {
+      font-size: 18px;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .detail-block {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .detail-block-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 6px;
+      padding-left: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .detail-list li {
+      border-left: 3px solid var(--color-border-strong);
+      padding-left: 8px;
+      color: var(--color-text-muted);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .metric-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric-box {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      padding: 8px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .metric-box span {
+      color: var(--color-text-soft);
+      font-size: 11px;
+    }
+
+    .metric-box strong {
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    .notice {
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--color-warning);
+      border-radius: var(--radius-card);
+      background: #fffaf2;
+      padding: 10px;
+      color: #6b4c1d;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .method-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .method-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-muted);
+      padding: 9px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .method-card strong {
+      font-size: 12px;
+    }
+
+    .method-card span {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    .footer-note {
+      color: var(--color-text-muted);
+      font-size: 12px;
+      padding: 8px 2px 0;
+    }
+
+    @media (max-width: 1480px) {
+      .app-shell {
+        grid-template-columns: 76px minmax(0, 1fr) minmax(300px, 340px);
+      }
+
+      .left-rail {
+        padding: 12px 8px;
+      }
+
+      .brand-mark strong,
+      .brand-mark span,
+      .nav-link span:last-child,
+      .rail-note {
+        display: none;
+      }
+
+      .nav-link {
+        justify-content: center;
+        padding: 9px 6px;
+      }
+
+      .detail-rail {
+        padding-right: 12px;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .message-row {
+        grid-template-columns: 1fr;
+      }
+
+      .kol-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 980px) {
+      .app-shell {
+        grid-template-columns: 76px minmax(0, 1fr);
+      }
+
+      .detail-rail {
+        position: static;
+        grid-column: 2;
+        height: auto;
+        padding: 0 16px 24px;
+      }
+
+      .detail-panel {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .app-shell {
+        display: block;
+      }
+
+      .left-rail {
+        position: static;
+        height: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        overflow: auto;
+      }
+
+      .brand-mark {
+        min-width: 72px;
+        border-bottom: 0;
+        padding: 0;
+        margin: 0;
+      }
+
+      .nav-list {
+        display: flex;
+        min-width: max-content;
+      }
+
+      .top-command,
+      .overview-grid,
+      .pivot-grid,
+      .budget-layout,
+      .treatment-grid,
+      .kol-grid,
+      .source-grid,
+      .method-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .lens-bar {
+        top: 0;
+      }
+
+      .task-row,
+      .review-row,
+      .message-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="left-rail" aria-label="看板导航">
+      <div class="brand-mark">
+        <strong>Scientific Marketing</strong>
+        <span>__DASHBOARD_SHORT_LABEL__</span>
+      </div>
+      <nav class="nav-list">
+        <a class="nav-link active" href="#overview"><span class="nav-token">01</span><span>概览</span></a>
+        <a class="nav-link" href="#pivot"><span class="nav-token">02</span><span>透视</span></a>
+        <a class="nav-link" href="#graph"><span class="nav-token">03</span><span>关系图</span></a>
+        <a class="nav-link" href="#heatmap"><span class="nav-token">04</span><span>热力图</span></a>
+        <a class="nav-link" href="#messages"><span class="nav-token">05</span><span>讲法</span></a>
+        <a class="nav-link" href="#budget"><span class="nav-token">06</span><span>预算</span></a>
+        <a class="nav-link" href="#treatments"><span class="nav-token">07</span><span>Treatment</span></a>
+        <a class="nav-link" href="#execution"><span class="nav-token">08</span><span>执行</span></a>
+      </nav>
+      <div class="rail-note">点击任一人群、平台、卖点或格子，右侧会给出投放动作、理由和验证口径。</div>
+    </aside>
+
+    <main class="workspace">
+      <header class="top-command" id="overview">
+        <div class="title-block">
+          <div class="eyebrow">INTERACTIVE DECISION DASHBOARD</div>
+          <h1>__DASHBOARD_H1__</h1>
+          <p class="subtitle">__DASHBOARD_SUBTITLE__</p>
+        </div>
+        <div class="command-box">
+          <input id="commandSearch" class="search-input" type="search" placeholder="__SEARCH_PLACEHOLDER__" aria-label="搜索实体" />
+          <button class="reset-button" id="clearSelection" type="button">清除选择</button>
+        </div>
+      </header>
+
+      <section class="overview-grid" id="kpiMount" aria-label="核心指标"></section>
+
+      <div class="lens-bar" aria-live="polite">
+        <span class="lens-label">CURRENT LENS</span>
+        <div class="lens-content" id="lensContent"></div>
+        <button class="small-button" id="jumpDetail" type="button">看右侧详情</button>
+      </div>
+
+      <section class="section" id="pivot">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">PIVOT - 三向透视</div>
+            <h2>卖点、人群、平台互相点击</h2>
+            <p class="section-kicker">先看“谁会在意什么”，再看“哪个平台能找到他们”，最后落到 Treatment 和预算。被点中的实体会在全页高亮。</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag main">H 主投</span>
+            <span class="tag test">T 测试</span>
+            <span class="tag small">S 小测</span>
+            <span class="tag suppress">A 压制</span>
+          </div>
+        </div>
+        <div class="pivot-grid">
+          <div class="pivot-column">
+            <div class="column-head"><h3>卖点</h3><span id="sellingCount"></span></div>
+            <div class="entity-list" id="sellingList"></div>
+          </div>
+          <div class="pivot-column">
+            <div class="column-head"><h3>人群维度</h3><span id="audienceCount"></span></div>
+            <div class="entity-list" id="audienceList"></div>
+          </div>
+          <div class="pivot-column">
+            <div class="column-head"><h3>平台</h3><span id="platformCount"></span></div>
+            <div class="entity-list" id="platformList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="graph">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">RELATIONSHIP GRAPH</div>
+            <h2>Product -> Selling Point -> Audience -> Platform -> Message -> Treatment -> Measurement</h2>
+            <p class="section-kicker">这张图改成分层路径视图：每一列是一层决策，相关节点高亮，不再用杂乱箭头连线。未选择时展示第一轮主路径。</p>
+          </div>
+          <button class="small-button" type="button" id="graphReset">回到主路径</button>
+        </div>
+        <div class="graph-wrap" id="graphWrap">
+          <div class="graph-canvas" id="graphCanvas">
+            <div class="graph-columns" id="graphColumns"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="heatmap">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">HEATMAP - 平台 x 人群</div>
+            <h2>每个平台能承接哪些人群维度</h2>
+            <p class="section-kicker">颜色表示第一轮投放优先级。点单元格查看“为什么投、怎么投、如何反驳”。</p>
+          </div>
+          <div class="legend">
+            <span class="grade-chip grade-h">H 主投</span>
+            <span class="grade-chip grade-t">T 测试</span>
+            <span class="grade-chip grade-s">S 小测</span>
+            <span class="grade-chip grade-n">N 不投</span>
+            <span class="grade-chip grade-a">A 压制</span>
+          </div>
+        </div>
+        <div class="heatmap-tools">
+          <div class="tag-row" id="heatSummary"></div>
+          <button class="small-button" id="selectTopCells" type="button">只看主投格</button>
+        </div>
+        <div class="heatmap-scroll" id="heatmapMount"></div>
+      </section>
+
+      <section class="section" id="messages">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">CONTEXTUAL MESSAGE MATRIX</div>
+            <h2>同一个卖点，在不同平台要换讲法</h2>
+            <p class="section-kicker">这层把“卖点 x 人群 x 平台”翻译成 buyer question、比较等级、证据包和禁讲边界。点任一行查看右侧完整语境卡。</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag main">0-1 不提竞品</span>
+            <span class="tag test">2-3 品类/具名对比</span>
+            <span class="tag small">4-5 专家证据</span>
+          </div>
+        </div>
+        <div class="micro-table message-table" id="messageMount"></div>
+      </section>
+
+      <section class="section" id="budget">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">BUDGET FLOW</div>
+            <h2>€20,000 从预算流到平台、Treatment 和验证</h2>
+            <p class="section-kicker">预算按试投比例分配。绿色偏主投，橙色偏验证，红色只用于风险控制。</p>
+          </div>
+          <span class="tag main">__MARGIN_BADGE__</span>
+        </div>
+        <div class="budget-layout">
+          <div class="flow-board" id="budgetFlowMount"></div>
+          <div class="roi-board">
+            <div>
+              <div class="eyebrow">ROI RANGE - 规划假设</div>
+              <h3>五类打法的净 ROI 区间</h3>
+            </div>
+            <div id="roiMount"></div>
+            <div class="notice">放量门槛以 DATA.product.scaleThreshold 为准；价格、毛利、库存、频次和负反馈护栏必须同时稳定。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="treatments">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">TREATMENT CARDS</div>
+            <h2>每一笔钱对应一个可验证动作</h2>
+            <p class="section-kicker">Treatment Card 是策略和执行之间的桥。它必须写清假设、人群 proxy、平台、预算、创意、指标和对照。</p>
+          </div>
+        </div>
+        <div class="treatment-grid" id="treatmentMount"></div>
+      </section>
+
+      <section class="section" id="kol">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">KOL / CREATOR</div>
+            <h2>创作者采购建议和费用解释</h2>
+            <p class="section-kicker">第一轮建议买“证明素材 + 可放大授权”，不要只买一次曝光。报价必须拿到受众国家、平均触达、授权范围和 UTM 条款。</p>
+          </div>
+        </div>
+        <div class="kol-grid" id="kolMount"></div>
+      </section>
+
+      <section class="section" id="execution">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">EXECUTION CHECKLIST</div>
+            <h2>把看板落成投放动作</h2>
+            <p class="section-kicker">每条任务都有对应平台、Treatment、证据要求和状态。点击任务会切到对应 Treatment。</p>
+          </div>
+        </div>
+        <div class="micro-table" id="taskMount"></div>
+      </section>
+
+      <section class="section" id="review">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">REVIEWER CHALLENGES</div>
+            <h2>评审人反驳清单</h2>
+            <p class="section-kicker">D 维度的颜色来自语义先验、平台可投 proxy 和产品机制匹配。评审人负责指出可能错在哪里。</p>
+          </div>
+        </div>
+        <div class="micro-table" id="reviewMount"></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">SOURCES</div>
+            <h2>来源和平台文档</h2>
+            <p class="section-kicker">看板引用 locked audit report 的来源注册表。正式投放前需要重新检查价格、库存、广告平台可用功能和 KOL 报价。</p>
+          </div>
+        </div>
+        <div class="source-grid" id="sourceMount"></div>
+      </section>
+
+      <p class="footer-note">__DASHBOARD_FOOTER_NOTE__</p>
+    </main>
+
+    <aside class="detail-rail" aria-label="选择详情">
+      <section class="detail-panel" id="detailPanel"></section>
+    </aside>
+  </div>
+
+  <script>
+    const DATA = __DASHBOARD_DATA_JSON__;
+
+    const state = {
+      selection: null,
+      search: "",
+      topOnly: false
+    };
+
+    const byId = (items) => Object.fromEntries(items.map((item) => [item.id, item]));
+    const maps = {
+      dimensions: byId(DATA.dimensions),
+      sellingPoints: byId(DATA.sellingPoints),
+      platforms: byId(DATA.platforms),
+      treatments: byId(DATA.treatments),
+      budgets: byId(DATA.budgets),
+      messages: byId(DATA.messageContexts),
+      kol: byId(DATA.kol)
+    };
+
+    const assetBase = DATA.assets?.basePath || "";
+    const platformLogoDefaults = {
+      google: ["google"],
+      shopping: ["google"],
+      amazon: ["amazon"],
+      retail: ["mediaworld", "unieuro", "euronics", "eprice"],
+      tiktok_meta: ["tiktok", "instagram"],
+      youtube: ["youtube", "hdblog", "smartworld"],
+      kol: ["instagram", "youtube"],
+      retarget: ["google", "instagram"]
+    };
+    const messageLogoDefaults = {
+      MC01: ["google"],
+      MC02: ["google"],
+      MC03: ["amazon"],
+      MC04: ["mediaworld", "unieuro", "euronics", "eprice"],
+      MC05: ["tiktok", "instagram"],
+      MC06: ["youtube", "hdblog", "smartworld", "hwupgrade", "dday", "tuttoandroid"],
+      MC07: ["instagram", "youtube"],
+      MC08: ["google", "instagram"],
+      MC09: ["trovaprezzi", "idealo"],
+      MC10: ["hdblog", "hwupgrade", "smartworld", "tuttoandroid"],
+      MC11: ["amazon", "ebay", "eprice"]
+    };
+    const kolMeta = DATA.kolMeta || __KOL_META_JSON__;
+
+    function assetUrl(file) {
+      return `${assetBase}${file}`;
+    }
+
+    function logoImg(id, label = id) {
+      const file = DATA.assets?.icons?.[id];
+      if (!file) return "";
+      return `<img class="mini-logo" src="${assetUrl(file)}" alt="${label} logo" loading="lazy">`;
+    }
+
+    function logoStrip(ids = []) {
+      return `<span class="logo-row">${ids.map((id) => logoImg(id)).join("")}</span>`;
+    }
+
+    function platformLogoIds(platformId) {
+      const platform = maps.platforms[platformId];
+      if (platform?.logoIds?.length) return platform.logoIds;
+      return platformLogoDefaults[platformId] || [];
+    }
+
+    function messageLogoIds(message) {
+      if (message.logoIds?.length) return message.logoIds;
+      return messageLogoDefaults[message.id] || message.platformIds.flatMap((id) => platformLogoIds(id));
+    }
+
+    const gradeText = {
+      H: "主投",
+      T: "测试",
+      S: "小测",
+      N: "不投",
+      A: "压制"
+    };
+
+    const statusText = {
+      main: "保留",
+      test: "测试",
+      quote: "询价",
+      holdout: "保留 + 对照",
+      suppress: "压制"
+    };
+
+    const kindText = {
+      product: "产品",
+      sellingPoint: "卖点",
+      audience: "人群",
+      platform: "平台",
+      treatment: "Treatment",
+      budget: "预算",
+      message: "语境讲法",
+      kol: "KOL",
+      measurement: "验证",
+      combination: "组合"
+    };
+
+    function setActiveNav(sectionId) {
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${sectionId}`);
+      });
+    }
+
+    function setupNavTracking() {
+      const links = [...document.querySelectorAll(".nav-link")];
+      const sections = links
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+      let ticking = false;
+      const updateFromScroll = () => {
+        const anchorLine = window.innerHeight * 0.26;
+        let current = sections[0]?.id || "overview";
+        sections.forEach((section) => {
+          if (section.getBoundingClientRect().top <= anchorLine) current = section.id;
+        });
+        setActiveNav(current);
+        ticking = false;
+      };
+      links.forEach((link) => {
+        link.addEventListener("click", () => {
+          const id = link.getAttribute("href").slice(1);
+          setActiveNav(id);
+          window.setTimeout(updateFromScroll, 260);
+        });
+      });
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(updateFromScroll);
+      }, { passive: true });
+      window.addEventListener("hashchange", () => {
+        const id = window.location.hash ? window.location.hash.slice(1) : "overview";
+        setActiveNav(id);
+        window.setTimeout(updateFromScroll, 260);
+      });
+      window.setTimeout(updateFromScroll, 180);
+    }
+
+    function formatEUR(value) {
+      return "€" + Number(value).toLocaleString("en-US");
+    }
+
+    function unique(values) {
+      return [...new Set(values.filter(Boolean))];
+    }
+
+    function getPlatformAudienceIds(platformId, minGrades = ["H", "T", "S", "A"]) {
+      const row = DATA.heatmapRows.find((item) => item.platformId === platformId);
+      if (!row) return [];
+      return DATA.heatmapColumns.filter((dimId, index) => minGrades.includes(row.grades[index]));
+    }
+
+    function getGrade(platformId, audienceId) {
+      const row = DATA.heatmapRows.find((item) => item.platformId === platformId);
+      const colIndex = DATA.heatmapColumns.indexOf(audienceId);
+      if (!row || colIndex < 0) return null;
+      return row.grades[colIndex];
+    }
+
+    function entityName(kind, id) {
+      if (kind === "product") return DATA.product.name;
+      if (kind === "sellingPoint") return maps.sellingPoints[id]?.name || id;
+      if (kind === "audience") {
+        const dim = maps.dimensions[id];
+        return dim ? `${dim.id} ${dim.cn}` : id;
+      }
+      if (kind === "platform") return maps.platforms[id]?.name || id;
+      if (kind === "treatment") return maps.treatments[id]?.name || id;
+      if (kind === "budget") return maps.budgets[id]?.name || id;
+      if (kind === "message") return maps.messages[id]?.vertical || id;
+      if (kind === "kol") return maps.kol[id]?.name || id;
+      if (kind === "measurement") return "Holdout + UTM + Gross Margin";
+      return id || "未选择";
+    }
+
+    function getRelations(selection) {
+      if (!selection) {
+        return {
+          sellingPointIds: ["SP1", "SP2", "SP3", "SP7"],
+          audienceIds: ["D7", "D8", "D10", "D18", "D19", "D21", "D24", "D31"],
+          platformIds: ["google", "shopping", "amazon", "youtube", "retarget"],
+          treatmentIds: ["T01", "T02", "T03", "T04", "T06"],
+          budgetIds: ["B01", "B02", "B05", "B06", "B07"],
+          messageIds: DATA.messageContexts.map((m) => m.id),
+          kolIds: []
+        };
+      }
+
+      if (selection.kind === "combination") {
+        const { platformId, audienceId } = selection;
+        const treatments = DATA.treatments.filter((t) => t.platformIds.includes(platformId) && t.audienceIds.includes(audienceId)).map((t) => t.id);
+        const dim = maps.dimensions[audienceId];
+        return {
+          sellingPointIds: dim ? dim.sellingPointIds : [],
+          audienceIds: [audienceId],
+          platformIds: [platformId],
+          treatmentIds: treatments,
+          budgetIds: DATA.budgets.filter((b) => b.platformIds.includes(platformId) || b.audienceIds.includes(audienceId)).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.platformIds.includes(platformId) && m.audienceIds.includes(audienceId)).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => k.audienceIds.includes(audienceId)).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "sellingPoint") {
+        const sp = maps.sellingPoints[selection.id];
+        return {
+          sellingPointIds: [selection.id],
+          audienceIds: sp.linkedAudienceIds,
+          platformIds: sp.linkedPlatformIds,
+          treatmentIds: sp.linkedTreatmentIds,
+          budgetIds: DATA.budgets.filter((b) => b.treatmentIds.some((id) => sp.linkedTreatmentIds.includes(id))).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.sellingPointIds.includes(selection.id)).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => k.audienceIds.some((id) => sp.linkedAudienceIds.includes(id))).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "audience") {
+        const dim = maps.dimensions[selection.id];
+        const platformIds = DATA.platforms.filter((p) => ["H", "T", "S", "A"].includes(getGrade(p.id, selection.id))).map((p) => p.id);
+        return {
+          sellingPointIds: dim.sellingPointIds,
+          audienceIds: [selection.id],
+          platformIds,
+          treatmentIds: dim.treatmentIds,
+          budgetIds: DATA.budgets.filter((b) => b.audienceIds.includes(selection.id)).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.audienceIds.includes(selection.id)).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => k.audienceIds.includes(selection.id)).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "platform") {
+        const platform = maps.platforms[selection.id];
+        const audienceIds = getPlatformAudienceIds(selection.id);
+        return {
+          sellingPointIds: platform.linkedSellingPointIds,
+          audienceIds,
+          platformIds: [selection.id],
+          treatmentIds: platform.linkedTreatmentIds,
+          budgetIds: DATA.budgets.filter((b) => b.platformIds.includes(selection.id)).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.platformIds.includes(selection.id)).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => platform.id === "kol" || (platform.id === "tiktok_meta" && k.treatmentIds.includes("T05"))).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "treatment") {
+        const t = maps.treatments[selection.id];
+        return {
+          sellingPointIds: t.sellingPointIds,
+          audienceIds: t.audienceIds,
+          platformIds: t.platformIds,
+          treatmentIds: [selection.id],
+          budgetIds: DATA.budgets.filter((b) => b.treatmentIds.includes(selection.id)).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.treatmentIds.includes(selection.id)).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => k.treatmentIds.includes(selection.id)).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "budget") {
+        const b = maps.budgets[selection.id];
+        return {
+          sellingPointIds: unique(b.treatmentIds.flatMap((id) => maps.treatments[id]?.sellingPointIds || [])),
+          audienceIds: b.audienceIds,
+          platformIds: b.platformIds,
+          treatmentIds: b.treatmentIds,
+          budgetIds: [selection.id],
+          messageIds: DATA.messageContexts.filter((m) => m.treatmentIds.some((id) => b.treatmentIds.includes(id)) || m.platformIds.some((id) => b.platformIds.includes(id)) || m.audienceIds.some((id) => b.audienceIds.includes(id))).map((m) => m.id),
+          kolIds: DATA.kol.filter((k) => k.treatmentIds.some((id) => b.treatmentIds.includes(id))).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "kol") {
+        const k = maps.kol[selection.id];
+        return {
+          sellingPointIds: unique(k.audienceIds.flatMap((id) => maps.dimensions[id]?.sellingPointIds || [])),
+          audienceIds: k.audienceIds,
+          platformIds: ["kol", "tiktok_meta", "youtube"],
+          treatmentIds: k.treatmentIds,
+          budgetIds: DATA.budgets.filter((b) => b.treatmentIds.some((id) => k.treatmentIds.includes(id))).map((b) => b.id),
+          messageIds: DATA.messageContexts.filter((m) => m.treatmentIds.some((id) => k.treatmentIds.includes(id)) || m.audienceIds.some((id) => k.audienceIds.includes(id))).map((m) => m.id),
+          kolIds: [selection.id]
+        };
+      }
+
+      if (selection.kind === "message") {
+        const m = maps.messages[selection.id];
+        return {
+          sellingPointIds: m.sellingPointIds,
+          audienceIds: m.audienceIds,
+          platformIds: m.platformIds,
+          treatmentIds: m.treatmentIds,
+          budgetIds: DATA.budgets.filter((b) => b.treatmentIds.some((id) => m.treatmentIds.includes(id)) || b.platformIds.some((id) => m.platformIds.includes(id))).map((b) => b.id),
+          messageIds: [selection.id],
+          kolIds: DATA.kol.filter((k) => k.treatmentIds.some((id) => m.treatmentIds.includes(id)) || k.audienceIds.some((id) => m.audienceIds.includes(id))).map((k) => k.id)
+        };
+      }
+
+      if (selection.kind === "measurement") {
+        return {
+          sellingPointIds: DATA.sellingPoints.map((sp) => sp.id),
+          audienceIds: ["D7", "D8", "D18", "D19", "D21", "D31", "D34"],
+          platformIds: ["google", "shopping", "amazon", "youtube", "kol", "retarget"],
+          treatmentIds: DATA.treatments.map((t) => t.id),
+          budgetIds: DATA.budgets.map((b) => b.id),
+          messageIds: DATA.messageContexts.map((m) => m.id),
+          kolIds: DATA.kol.map((k) => k.id)
+        };
+      }
+
+      return getRelations(null);
+    }
+
+    function isRelated(kind, id, relations) {
+      if (!state.selection) return true;
+      if (kind === "sellingPoint") return relations.sellingPointIds.includes(id);
+      if (kind === "audience") return relations.audienceIds.includes(id);
+      if (kind === "platform") return relations.platformIds.includes(id);
+      if (kind === "treatment") return relations.treatmentIds.includes(id);
+      if (kind === "budget") return relations.budgetIds.includes(id);
+      if (kind === "message") return relations.messageIds.includes(id);
+      if (kind === "kol") return relations.kolIds.includes(id);
+      return true;
+    }
+
+    function matchesSearch(text) {
+      if (!state.search) return true;
+      return text.toLowerCase().includes(state.search.toLowerCase());
+    }
+
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const polishSurfaceSelector = [
+      ".nav-link",
+      ".kpi-card",
+      ".entity-card",
+      ".graph-node",
+      ".heat-button",
+      ".flow-row",
+      ".treatment-card",
+      ".kol-card",
+      ".task-row",
+      ".review-row",
+      ".source-card",
+      ".message-row",
+      ".detail-panel"
+    ].join(",");
+
+    function renderWithTransition() {
+      if (document.startViewTransition && !reduceMotion.matches) {
+        document.startViewTransition(() => renderAllDynamic());
+        return;
+      }
+      renderAllDynamic();
+    }
+
+    function cssEscape(value) {
+      return window.CSS?.escape ? window.CSS.escape(String(value)) : String(value).replace(/"/g, '\\"');
+    }
+
+    function flashSelection(kind, id, extra = {}) {
+      if (reduceMotion.matches) return;
+      const selector = kind === "combination"
+        ? '[data-cell-platform="' + cssEscape(extra.platformId) + '"][data-cell-audience="' + cssEscape(extra.audienceId) + '"]'
+        : '[data-kind="' + cssEscape(kind) + '"][data-id="' + cssEscape(id) + '"]';
+      document.querySelectorAll(selector).forEach((item) => {
+        item.classList.remove("interaction-confirm");
+        void item.offsetWidth;
+        item.classList.add("interaction-confirm");
+        window.setTimeout(() => item.classList.remove("interaction-confirm"), 360);
+      });
+    }
+
+    function setupPointerPolish() {
+      if (reduceMotion.matches) return;
+      document.addEventListener("pointermove", (event) => {
+        const surface = event.target.closest(polishSurfaceSelector);
+        if (!surface) return;
+        const rect = surface.getBoundingClientRect();
+        surface.style.setProperty("--spot-x", (event.clientX - rect.left) + "px");
+        surface.style.setProperty("--spot-y", (event.clientY - rect.top) + "px");
+      }, { passive: true });
+    }
+
+    function setupSectionReveal() {
+      if (reduceMotion.matches || !("IntersectionObserver" in window)) return;
+      document.documentElement.classList.add("motion-ready");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in-view");
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.08, rootMargin: "0px 0px -12% 0px" });
+      document.querySelectorAll(".section").forEach((section) => observer.observe(section));
+    }
+
+    function selectEntity(kind, id, extra = {}) {
+      state.selection = { kind, id, ...extra };
+      renderWithTransition();
+      window.requestAnimationFrame(() => flashSelection(kind, id, extra));
+      if (window.innerWidth < 980) {
+        document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function clearSelection() {
+      state.selection = null;
+      state.topOnly = false;
+      renderWithTransition();
+    }
+
+    function renderKpis() {
+      document.getElementById("kpiMount").innerHTML = DATA.kpis.map(([label, value, note]) => `
+        <div class="kpi-card">
+          <span>${label}</span>
+          <strong>${value}</strong>
+          <span>${note}</span>
+        </div>
+      `).join("");
+    }
+
+    function tagHtml(text, cls = "") {
+      return `<span class="tag ${cls}">${text}</span>`;
+    }
+
+    function renderEntityLists() {
+      const relations = getRelations(state.selection);
+      document.getElementById("sellingCount").textContent = `${DATA.sellingPoints.length} SP`;
+      document.getElementById("audienceCount").textContent = `${DATA.dimensions.length} D`;
+      document.getElementById("platformCount").textContent = `${DATA.platforms.length} P`;
+
+      document.getElementById("sellingList").innerHTML = DATA.sellingPoints.map((sp) => {
+        const selected = state.selection?.kind === "sellingPoint" && state.selection.id === sp.id;
+        const dimmed = !isRelated("sellingPoint", sp.id, relations);
+        const searchText = `${sp.id} ${sp.name} ${sp.consumerLanguage.join(" ")} ${sp.linkedAudienceIds.join(" ")}`;
+        return `
+          <button class="entity-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="sellingPoint" data-id="${sp.id}" data-search="${searchText}" type="button" aria-label="选择卖点 ${sp.name}">
+            <div class="card-top"><span class="card-id">${sp.id}</span>${tagHtml(`${sp.linkedTreatmentIds.length} Treatment`, "main")}</div>
+            <div class="card-title">${sp.name}</div>
+            <div class="card-desc">${sp.consumerLanguage[0]}</div>
+            <div class="tag-row">${sp.linkedAudienceIds.slice(0, 5).map((id) => tagHtml(id)).join("")}</div>
+          </button>
+        `;
+      }).join("");
+
+      document.getElementById("audienceList").innerHTML = DATA.dimensions.map((dim) => {
+        const selected = state.selection?.kind === "audience" && state.selection.id === dim.id;
+        const dimmed = !isRelated("audience", dim.id, relations);
+        const cls = dim.status === "main" || dim.status === "holdout" ? "main" : dim.status === "suppress" ? "suppress" : dim.status === "quote" ? "small" : "test";
+        const searchText = `${dim.id} ${dim.name} ${dim.cn} ${dim.proxy} ${dim.logic}`;
+        return `
+          <button class="entity-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="audience" data-id="${dim.id}" data-search="${searchText}" type="button" aria-label="选择人群维度 ${dim.id} ${dim.cn}">
+            <div class="card-top"><span class="card-id">${dim.id}</span>${tagHtml(statusText[dim.status] || dim.status, cls)}</div>
+            <div class="card-title">${dim.cn} <span class="card-id">${dim.name}</span></div>
+            <div class="card-desc">${dim.logic}</div>
+            <div class="tag-row">${dim.sellingPointIds.map((id) => tagHtml(id)).join("")}</div>
+          </button>
+        `;
+      }).join("");
+
+      document.getElementById("platformList").innerHTML = DATA.platforms.map((platform) => {
+        const selected = state.selection?.kind === "platform" && state.selection.id === platform.id;
+        const dimmed = !isRelated("platform", platform.id, relations);
+        const cls = platform.priority === "main" ? "main" : platform.priority === "quote" ? "small" : "test";
+        const searchText = `${platform.name} ${platform.role} ${platform.summary} ${platform.execute}`;
+        return `
+          <button class="entity-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="platform" data-id="${platform.id}" data-search="${searchText}" type="button" aria-label="选择平台 ${platform.name}">
+            <div class="card-top"><span class="card-id">${platform.role}</span>${tagHtml(platform.priority, cls)}</div>
+            <div class="card-title platform-title">${logoStrip(platformLogoIds(platform.id))}<span>${platform.name}</span></div>
+            <div class="card-desc">${platform.summary}</div>
+            <div class="tag-row">${tagHtml(formatEUR(platform.budget), "main")}${platform.linkedTreatmentIds.map((id) => tagHtml(id)).join("")}</div>
+          </button>
+        `;
+      }).join("");
+
+      bindEntityButtons();
+    }
+
+    function bindEntityButtons() {
+      document.querySelectorAll("[data-kind][data-id]").forEach((button) => {
+        if (button.dataset.kind === "combination") return;
+        if (button.dataset.boundClick === "1") return;
+        button.dataset.boundClick = "1";
+        button.addEventListener("click", () => selectEntity(button.dataset.kind, button.dataset.id));
+      });
+    }
+
+    function renderGraph() {
+      const columns = [
+        { title: "PRODUCT", items: [{ kind: "product", id: "product", label: DATA.product.name, meta: DATA.product.market }] },
+        { title: "SELLING POINT", items: DATA.sellingPoints.map((sp) => ({ kind: "sellingPoint", id: sp.id, label: sp.name, meta: sp.id })) },
+        { title: "AUDIENCE", items: DATA.dimensions.map((dim) => ({ kind: "audience", id: dim.id, label: `${dim.id} ${dim.cn}`, meta: dim.name })) },
+        { title: "PLATFORM", items: DATA.platforms.map((p) => ({ kind: "platform", id: p.id, label: p.name, meta: p.role })) },
+        { title: "MESSAGE", items: DATA.messageContexts.map((m) => ({ kind: "message", id: m.id, label: m.vertical, meta: `Level ${m.comparisonLevel}` })) },
+        { title: "TREATMENT", items: DATA.treatments.map((t) => ({ kind: "treatment", id: t.id, label: t.name, meta: t.id })) },
+        { title: "MEASUREMENT", items: [{ kind: "measurement", id: "M01", label: "Holdout + UTM + Gross Margin", meta: "incrementality" }] }
+      ];
+      const relations = getRelations(state.selection);
+      document.getElementById("graphColumns").innerHTML = columns.map((col, index) => `
+        <div class="graph-column">
+          <div class="graph-column-title"><span class="graph-step">${index + 1}</span>${col.title}</div>
+          ${col.items.map((item) => {
+            const selected = state.selection?.kind === item.kind && state.selection.id === item.id;
+            const related = item.kind === "product" || item.kind === "measurement" || isRelated(item.kind, item.id, relations);
+            return `
+              <button class="graph-node ${selected ? "selected" : ""} ${related ? "" : "dimmed"}"
+                data-kind="${item.kind}" data-id="${item.id}" id="graph-${item.kind}-${item.id}" type="button" aria-label="图节点 ${item.label}">
+                <span class="node-kind">${item.meta}</span>
+                <span class="node-label">${item.label}</span>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `).join("");
+      bindEntityButtons();
+    }
+
+    function renderHeatmap() {
+      const header = `
+        <table class="heatmap-table">
+          <thead>
+            <tr>
+              <th><div class="hm-row-label">平台<span>点击平台</span></div></th>
+              ${DATA.heatmapColumns.map((dimId) => {
+                const dim = maps.dimensions[dimId];
+                return `<th><button class="hm-head" data-kind="audience" data-id="${dimId}" type="button" aria-label="选择 ${dimId} ${dim.cn}"><span class="hm-head-id">${dimId}</span><span class="hm-head-label">${dim.cn}</span></button></th>`;
+              }).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${DATA.heatmapRows.map((row) => {
+              const platform = maps.platforms[row.platformId];
+              return `
+                <tr>
+                  <td><button class="hm-row-label" data-kind="platform" data-id="${platform.id}" type="button" aria-label="选择平台 ${platform.name}">${platform.name}<span>${platform.role}</span></button></td>
+                  ${row.grades.map((grade, index) => {
+                    const audienceId = DATA.heatmapColumns[index];
+                    const hidden = state.topOnly && grade !== "H";
+                    return `<td class="heat-cell">
+                      <button class="heat-button hm-${grade.toLowerCase()} ${hidden ? "dimmed" : ""}" data-cell-platform="${platform.id}" data-cell-audience="${audienceId}" type="button" aria-label="${platform.name} x ${audienceId} ${gradeText[grade]}">${grade}</button>
+                    </td>`;
+                  }).join("")}
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      `;
+      document.getElementById("heatmapMount").innerHTML = header;
+      bindEntityButtons();
+      document.querySelectorAll("[data-cell-platform]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const platformId = button.dataset.cellPlatform;
+          const audienceId = button.dataset.cellAudience;
+          selectEntity("combination", `${platformId}-${audienceId}`, { platformId, audienceId });
+        });
+      });
+      const countH = DATA.heatmapRows.flatMap((r) => r.grades).filter((g) => g === "H").length;
+      const countT = DATA.heatmapRows.flatMap((r) => r.grades).filter((g) => g === "T").length;
+      document.getElementById("heatSummary").innerHTML = [
+        tagHtml(`${countH} 个主投格`, "main"),
+        tagHtml(`${countT} 个测试格`, "test"),
+        tagHtml("D34 只做压制监控", "suppress")
+      ].join("");
+      updateHeatmapSelection();
+    }
+
+    function updateHeatmapSelection() {
+      const relations = getRelations(state.selection);
+      document.querySelectorAll("[data-cell-platform]").forEach((button) => {
+        const platformId = button.dataset.cellPlatform;
+        const audienceId = button.dataset.cellAudience;
+        const selected = state.selection?.kind === "combination" && state.selection.platformId === platformId && state.selection.audienceId === audienceId;
+        const related = !state.selection || (relations.platformIds.includes(platformId) && relations.audienceIds.includes(audienceId));
+        button.classList.toggle("selected", selected);
+        button.classList.toggle("dimmed", !related || (state.topOnly && button.textContent.trim() !== "H"));
+      });
+    }
+
+    function renderMessages() {
+      const relations = getRelations(state.selection);
+      document.getElementById("messageMount").innerHTML = DATA.messageContexts.map((message) => {
+        const selected = state.selection?.kind === "message" && state.selection.id === message.id;
+        const related = isRelated("message", message.id, relations);
+        const searchText = `${message.id} ${message.vertical} ${message.buyerQuestion} ${message.mode} ${message.comparisonLevel} ${message.say} ${message.avoid} ${message.proofPacket}`;
+        const levelClass = message.comparisonLevel.startsWith("0") || message.comparisonLevel.startsWith("1") ? "main" : message.comparisonLevel.startsWith("4") || message.comparisonLevel.startsWith("5") ? "small" : "test";
+        return `
+          <button class="message-row ${selected ? "selected" : ""} ${related ? "" : "dimmed"} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="message" data-id="${message.id}" data-search="${searchText}" type="button" aria-label="选择讲法 ${message.vertical}">
+            <div class="message-meta">
+              <div class="message-title">${logoStrip(messageLogoIds(message))}<strong>${message.vertical}</strong></div>
+              <span>${message.id} · ${message.mode}</span>
+              <div>${tagHtml(`Level ${message.comparisonLevel}`, levelClass)}</div>
+              <span>${message.contentFormat || message.format}</span>
+            </div>
+            <div class="message-brief">
+              <div class="message-question">${message.buyerQuestion}</div>
+              <div class="message-copy"><strong>该讲什么：</strong>${message.say}</div>
+            </div>
+            <div class="message-proof">
+              <div class="message-proof-card">
+                <span>证据包</span>
+                <strong>${message.proofPacket}</strong>
+              </div>
+              <div class="message-copy"><strong>不要怎么讲：</strong>${message.avoid}</div>
+              <div class="tag-row">${message.treatmentIds.map((id) => tagHtml(entityName("treatment", id))).join("")}</div>
+              <span>${message.measurement}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+      bindEntityButtons();
+    }
+
+    function renderBudgetFlow() {
+      const relations = getRelations(state.selection);
+      const max = Math.max(...DATA.budgets.map((b) => b.amount));
+      document.getElementById("budgetFlowMount").innerHTML = DATA.budgets.map((b) => {
+        const selected = state.selection?.kind === "budget" && state.selection.id === b.id;
+        const dimmed = !isRelated("budget", b.id, relations);
+        const cls = b.status.includes("Need") || b.status.includes("待") ? "test" : b.status === "Method" ? "main" : "small";
+        return `
+          <button class="flow-row ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""}" data-kind="budget" data-id="${b.id}" type="button" aria-label="选择预算 ${b.name}">
+            <div class="amount-block"><strong>${formatEUR(b.amount)}</strong><span>${b.pct}% of test</span></div>
+            <div class="flow-track"><div class="flow-fill" style="width:${Math.max(7, (b.amount / max) * 100)}%"></div></div>
+            <div class="flow-meta"><strong>${b.name}</strong><span>${b.treatmentIds.join(" / ")}</span></div>
+            <div class="flow-action">${tagHtml(b.status, cls)}</div>
+          </button>
+        `;
+      }).join("");
+      bindEntityButtons();
+    }
+
+    function renderRoi() {
+      const minDomain = -0.5;
+      const maxDomain = 1.5;
+      const widthPercent = (value) => ((value - minDomain) / (maxDomain - minDomain)) * 100;
+      const relations = getRelations(state.selection);
+      document.getElementById("roiMount").innerHTML = DATA.plays.map((play) => {
+        const related = !state.selection || play.platformIds.some((id) => relations.platformIds.includes(id)) || play.audienceIds.some((id) => relations.audienceIds.includes(id));
+        const left = widthPercent(play.roiMin);
+        const width = widthPercent(play.roiMax) - widthPercent(play.roiMin);
+        const positive = play.roiMin > 0;
+        return `
+          <div class="roi-row ${related ? "" : "dimmed"}" title="${play.name} ${play.budget} CAC ${play.cac}">
+            <span class="card-id">${play.id}</span>
+            <div class="roi-scale">
+              <span class="roi-zero"></span>
+              <span class="roi-range ${positive ? "positive" : ""}" style="left:${left}%; width:${width}%"></span>
+            </div>
+            <span class="roi-label">${play.roiMin.toFixed(2)}-${play.roiMax.toFixed(2)}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTreatments() {
+      const relations = getRelations(state.selection);
+      document.getElementById("treatmentMount").innerHTML = DATA.treatments.map((t) => {
+        const selected = state.selection?.kind === "treatment" && state.selection.id === t.id;
+        const dimmed = !isRelated("treatment", t.id, relations);
+        const searchText = `${t.id} ${t.name} ${t.hypothesis} ${t.message} ${t.audienceIds.join(" ")} ${t.platformIds.join(" ")}`;
+        return `
+          <button class="treatment-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="treatment" data-id="${t.id}" data-search="${searchText}" type="button" aria-label="选择 Treatment ${t.id}">
+            <div class="card-top"><span class="card-id">${t.id}</span>${tagHtml(formatEUR(t.budget), "main")}</div>
+            <h3>${t.name}</h3>
+            <p class="card-desc">${t.hypothesis}</p>
+            <div class="tag-row">${t.platformIds.map((id) => tagHtml(maps.platforms[id]?.name || id)).join("")}</div>
+            <div class="tag-row">${t.audienceIds.slice(0, 6).map((id) => tagHtml(id)).join("")}</div>
+            <p class="card-desc"><strong>指标：</strong>${t.metric}</p>
+          </button>
+        `;
+      }).join("");
+      bindEntityButtons();
+    }
+
+    function renderKol() {
+      const relations = getRelations(state.selection);
+      document.getElementById("kolMount").innerHTML = DATA.kol.map((k) => {
+        const selected = state.selection?.kind === "kol" && state.selection.id === k.id;
+        const dimmed = !isRelated("kol", k.id, relations);
+        const meta = kolMeta[k.id] || {};
+        const searchText = `${k.id} ${k.type} ${k.name} ${k.range} ${k.reason} ${k.fit} ${meta.pricingBasis || ""}`;
+        const avatar = meta.avatar
+          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy">`
+          : `<span class="kol-avatar placeholder" aria-hidden="true">${k.id.replace("K", "")}</span>`;
+        return `
+          <button class="kol-card ${selected ? "selected" : ""} ${dimmed ? "dimmed" : ""} ${matchesSearch(searchText) ? "" : "hidden-by-search"}"
+            data-kind="kol" data-id="${k.id}" data-search="${searchText}" type="button" aria-label="选择 KOL ${k.name}">
+            ${avatar}
+            <div class="kol-body">
+              <div class="card-top"><span class="card-id">${k.type}</span>${tagHtml(k.range, "test")}</div>
+              <h3 class="platform-title">${logoStrip(meta.logoIds || [])}<span>${k.name}</span></h3>
+              <p class="card-desc">${k.reason}</p>
+              <p class="card-desc"><strong>报价依据：</strong>${meta.pricingBasis || "需要逐个拿受众国家、平均触达和授权范围后再估。"} </p>
+              <p class="card-desc"><strong>适合：</strong>${k.fit}</p>
+              <div class="tag-row">${k.audienceIds.slice(0, 5).map((id) => tagHtml(id)).join("")}</div>
+            </div>
+          </button>
+        `;
+      }).join("");
+      bindEntityButtons();
+    }
+
+    function renderTasks() {
+      const relations = getRelations(state.selection);
+      document.getElementById("taskMount").innerHTML = DATA.tasks.map((task) => {
+        const related = !state.selection || task.treatmentIds.some((id) => relations.treatmentIds.includes(id)) || task.platformIds.some((id) => relations.platformIds.includes(id));
+        const searchText = `${task.id} ${task.task} ${task.owner} ${task.evidence} ${task.treatmentIds.join(" ")}`;
+        return `
+          <button class="task-row ${related ? "" : "dimmed"} ${matchesSearch(searchText) ? "" : "hidden-by-search"}" data-kind="treatment" data-id="${task.treatmentIds[0]}" data-search="${searchText}" type="button" aria-label="选择任务 ${task.task}">
+            <div><strong>${task.task}</strong><br><span>${task.id}</span></div>
+            <div><strong>${task.owner}</strong><br><span>${task.platformIds.map((id) => maps.platforms[id]?.name || "Measurement").join(" / ") || "Measurement"}</span></div>
+            <div>${task.treatmentIds.map((id) => tagHtml(id)).join("")}</div>
+            <div>${tagHtml(task.status, task.status.includes("必须") ? "main" : "test")}<br><span>${task.timing}</span></div>
+            <div><span>${task.evidence}</span></div>
+          </button>
+        `;
+      }).join("");
+      bindEntityButtons();
+    }
+
+    function renderReviews() {
+      document.getElementById("reviewMount").innerHTML = DATA.reviewerChallenges.map((item) => `
+        <button class="review-row" data-kind="audience" data-id="${item.target.split(" ")[0]}" type="button" aria-label="选择评审项 ${item.target}">
+          <div><strong>${item.target}</strong><br><span>${item.id}</span></div>
+          <div><strong>反驳</strong><br><span>${item.challenge}</span></div>
+          <div><strong>处理</strong><br><span>${item.response}</span></div>
+          <div>${tagHtml("需要验证", "test")}</div>
+          <div><span>${item.evidence}</span></div>
+        </button>
+      `).join("");
+      bindEntityButtons();
+    }
+
+    function renderSources() {
+      document.getElementById("sourceMount").innerHTML = DATA.sources.map((source) => `
+        <article class="source-card">
+          <div class="card-top"><span class="card-id">${source.id}</span>${tagHtml("reference")}</div>
+          <h3><a href="${source.url}" target="_blank" rel="noreferrer">${source.title}</a></h3>
+          <p class="card-desc">${source.usedFor}</p>
+        </article>
+      `).join("");
+    }
+
+    function renderLens() {
+      const lens = document.getElementById("lensContent");
+      const relations = getRelations(state.selection);
+      if (!state.selection) {
+        lens.innerHTML = `
+          <span class="chip select">未选择：展示第一轮主路径</span>
+          <span class="chip">${relations.sellingPointIds.length} 个卖点</span>
+          <span class="chip">${relations.audienceIds.length} 个人群维度</span>
+          <span class="chip">${relations.platformIds.length} 个平台</span>
+          <span class="chip">${relations.treatmentIds.length} 个 Treatment</span>
+          <span class="chip">${relations.messageIds.length} 条讲法</span>
+        `;
+        return;
+      }
+      const label = state.selection.kind === "combination"
+        ? `${maps.platforms[state.selection.platformId].name} x ${state.selection.audienceId} ${maps.dimensions[state.selection.audienceId].cn}`
+        : entityName(state.selection.kind, state.selection.id);
+      lens.innerHTML = `
+        <span class="chip select">${kindText[state.selection.kind] || state.selection.kind}: ${label}</span>
+        <span class="chip">${relations.sellingPointIds.length} 卖点</span>
+        <span class="chip">${relations.audienceIds.length} 人群</span>
+        <span class="chip">${relations.platformIds.length} 平台</span>
+        <span class="chip">${relations.treatmentIds.length} Treatment</span>
+        <span class="chip">${relations.messageIds.length} 讲法</span>
+      `;
+    }
+
+    function chipButtons(ids, kind) {
+      return ids.map((id) => `<button class="chip" data-kind="${kind}" data-id="${id}" type="button">${entityName(kind, id)}</button>`).join("");
+    }
+
+    function listItems(items) {
+      return `<ul class="detail-list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+    }
+
+    function detailHeader(kind, title, subtitle) {
+      return `
+        <div class="detail-title">
+          <span class="eyebrow">${kindText[kind] || kind}</span>
+          <strong>${title}</strong>
+          <span class="subtitle">${subtitle || ""}</span>
+        </div>
+      `;
+    }
+
+    function renderDetail() {
+      const panel = document.getElementById("detailPanel");
+      const selection = state.selection;
+      if (!selection) {
+        panel.innerHTML = `
+          ${detailHeader("product", DATA.product.name, `${DATA.product.market} - ${DATA.product.category}`)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>预算</span><strong>${formatEUR(DATA.product.budget)}</strong></div>
+            <div class="metric-box"><span>放量门槛</span><strong>${DATA.product.scaleThreshold || "Needs data"}</strong></div>
+            <div class="metric-box"><span>毛利</span><strong>${DATA.product.grossMargin}</strong></div>
+            <div class="metric-box"><span>价格</span><strong>${DATA.product.priceRange}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">总建议</div>
+            ${listItems(DATA.product.defaultRecommendation || [
+              "先用核心平台验证主假设，再把预算转向增量毛利更稳定的组合。",
+              "第一轮先验证 Treatment，不直接宣称 CATE 或真实 ROI。",
+              "所有平台 ROAS 都要回到毛利口径和对照组。"
+            ])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">下一步</div>
+            <div class="method-strip">
+              ${(DATA.product.nextStepCards || [
+                { title: "1. 数据", text: "补齐价格、库存、平台报表和 treatment_id" },
+                { title: "2. 内容", text: "采购 creator 素材授权" },
+                { title: "3. 对照", text: "关键平台保留 holdout" },
+                { title: "4. 日志", text: "统一 treatment_id 和毛利字段" }
+              ]).map((step) => `<div class="method-card"><strong>${step.title}</strong><span>${step.text}</span></div>`).join("")}
+            </div>
+          </div>
+        `;
+        bindEntityButtons();
+        return;
+      }
+
+      if (selection.kind === "sellingPoint") {
+        const sp = maps.sellingPoints[selection.id];
+        panel.innerHTML = `
+          ${detailHeader("sellingPoint", sp.name, sp.id)}
+          <div class="detail-block">
+            <div class="detail-block-title">消费者语言</div>
+            ${listItems(sp.consumerLanguage)}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">需要证明</div>
+            ${listItems(sp.proofNeeded)}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">适合格式</div>
+            ${listItems(sp.formats)}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(sp.linkedAudienceIds, "audience")}</div>
+            <div class="tag-row">${chipButtons(sp.linkedPlatformIds, "platform")}</div>
+            <div class="tag-row">${chipButtons(sp.linkedTreatmentIds, "treatment")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">语境讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.sellingPointIds.includes(sp.id)).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "audience") {
+        const dim = maps.dimensions[selection.id];
+        const platformGrades = DATA.platforms.map((p) => ({ platform: p, grade: getGrade(p.id, dim.id) })).filter((x) => x.grade);
+        panel.innerHTML = `
+          ${detailHeader("audience", `${dim.id} ${dim.cn}`, dim.name)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>状态</span><strong>${statusText[dim.status]}</strong></div>
+            <div class="metric-box"><span>优先级</span><strong>${dim.priority}/3</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">为什么可能有效</div>
+            ${listItems([dim.logic, `可观察 proxy：${dim.proxy}`])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">评审人反驳</div>
+            <div class="notice">${dim.objection}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">平台优先级</div>
+            <div class="tag-row">${platformGrades.map(({ platform, grade }) => `<button class="chip grade-${grade.toLowerCase()}" data-kind="combination" data-id="${platform.id}-${dim.id}" data-platform-id="${platform.id}" data-audience-id="${dim.id}" type="button">${platform.name}: ${gradeText[grade]}</button>`).join("")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(dim.sellingPointIds, "sellingPoint")}</div>
+            <div class="tag-row">${chipButtons(dim.treatmentIds, "treatment")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">语境讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.audienceIds.includes(dim.id)).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "platform") {
+        const platform = maps.platforms[selection.id];
+        panel.innerHTML = `
+          ${detailHeader("platform", platform.name, `${platform.role} - ${platform.priority}`)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>预算</span><strong>${formatEUR(platform.budget)}</strong></div>
+            <div class="metric-box"><span>角色</span><strong>${platform.role}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">为什么投</div>
+            ${listItems([platform.summary])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">实操建议</div>
+            ${listItems([platform.execute])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">消费者语言</div>
+            ${listItems([platform.consumerLanguage])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">风险和指标</div>
+            ${listItems([platform.risk, platform.metric])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(getPlatformAudienceIds(platform.id, ["H", "T"]), "audience")}</div>
+            <div class="tag-row">${chipButtons(platform.linkedTreatmentIds, "treatment")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">语境讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.platformIds.includes(platform.id)).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "treatment") {
+        const t = maps.treatments[selection.id];
+        panel.innerHTML = `
+          ${detailHeader("treatment", `${t.id} ${t.name}`, t.format)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>预算</span><strong>${formatEUR(t.budget)}</strong></div>
+            <div class="metric-box"><span>对照</span><strong>${t.holdout}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">假设</div>
+            ${listItems([t.hypothesis])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">内容表达</div>
+            ${listItems([t.message])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">成功指标</div>
+            ${listItems([t.metric])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">风险</div>
+            ${listItems(t.risks)}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(t.audienceIds, "audience")}</div>
+            <div class="tag-row">${chipButtons(t.platformIds, "platform")}</div>
+            <div class="tag-row">${chipButtons(t.sellingPointIds, "sellingPoint")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">语境讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.treatmentIds.includes(t.id)).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "budget") {
+        const b = maps.budgets[selection.id];
+        panel.innerHTML = `
+          ${detailHeader("budget", b.name, `${b.pct}% of ${formatEUR(DATA.product.budget)}`)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>预算</span><strong>${formatEUR(b.amount)}</strong></div>
+            <div class="metric-box"><span>状态</span><strong>${b.status}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">理由</div>
+            ${listItems([b.rationale])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">实操建议</div>
+            ${listItems([b.action])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(b.platformIds, "platform")}</div>
+            <div class="tag-row">${chipButtons(b.treatmentIds, "treatment")}</div>
+            <div class="tag-row">${chipButtons(b.audienceIds.slice(0, 8), "audience")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">语境讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.treatmentIds.some((id) => b.treatmentIds.includes(id)) || m.platformIds.some((id) => b.platformIds.includes(id))).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "message") {
+        const m = maps.messages[selection.id];
+        panel.innerHTML = `
+          ${detailHeader("message", `${m.id} ${m.vertical}`, m.mode)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>比较等级</span><strong>${m.comparisonLevel}</strong></div>
+            <div class="metric-box"><span>CTA</span><strong>${m.cta}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">买家问题</div>
+            ${listItems([m.buyerQuestion])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">该讲什么</div>
+            ${listItems([m.say])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">不要怎么讲</div>
+            <div class="notice">${m.avoid}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">证据包和边界</div>
+            ${listItems([m.proofPacket, m.claimBoundary])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">格式和测量</div>
+            ${listItems([m.format, m.measurement])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(m.platformIds, "platform")}</div>
+            <div class="tag-row">${chipButtons(m.audienceIds, "audience")}</div>
+            <div class="tag-row">${chipButtons(m.sellingPointIds, "sellingPoint")}</div>
+            <div class="tag-row">${chipButtons(m.treatmentIds, "treatment")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "kol") {
+        const k = maps.kol[selection.id];
+        const meta = kolMeta[k.id] || {};
+        const avatar = meta.avatar
+          ? `<img class="kol-avatar" src="${assetUrl(meta.avatar)}" alt="${k.name} avatar" loading="lazy">`
+          : `<span class="kol-avatar placeholder" aria-hidden="true">${k.id.replace("K", "")}</span>`;
+        panel.innerHTML = `
+          ${detailHeader("kol", k.name, k.type)}
+          <div class="detail-block">
+            <div class="platform-title">${avatar}<div><strong>${k.name}</strong><br><span>${logoStrip(meta.logoIds || [])}</span></div></div>
+          </div>
+          <div class="metric-pair">
+            <div class="metric-box"><span>预估费用</span><strong>${k.range}</strong></div>
+            <div class="metric-box"><span>用途</span><strong>${k.treatmentIds.join(" / ")}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">费用为什么这样估</div>
+            ${listItems([k.reason, meta.pricingBasis || "需要先拿受众国家、平均触达、授权范围和报价单。"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">适合任务</div>
+            ${listItems([k.fit])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">采购前必须要</div>
+            ${listItems(["意大利受众占比截图", "近 10 条内容平均观看或触达", "授权范围和付费放大权限", "UTM 和链接位置"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">公开主页 / 头像来源</div>
+            ${listItems([meta.profileUrl ? `<a href="${meta.profileUrl}" target="_blank" rel="noreferrer">${meta.profileUrl}</a>` : "未指定真人，按 micro creator pool 采购", meta.avatarSource ? `<a href="${meta.avatarSource}" target="_blank" rel="noreferrer">${meta.avatarSource}</a>` : "头像使用占位，不冒充具体真人"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接关系</div>
+            <div class="tag-row">${chipButtons(k.audienceIds, "audience")}</div>
+            <div class="tag-row">${chipButtons(k.treatmentIds, "treatment")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "combination") {
+        const platform = maps.platforms[selection.platformId];
+        const dim = maps.dimensions[selection.audienceId];
+        const grade = getGrade(platform.id, dim.id);
+        const treatments = DATA.treatments.filter((t) => t.platformIds.includes(platform.id) && t.audienceIds.includes(dim.id));
+        panel.innerHTML = `
+          ${detailHeader("combination", `${platform.name} x ${dim.id} ${dim.cn}`, `${grade} - ${gradeText[grade]}`)}
+          <div class="metric-pair">
+            <div class="metric-box"><span>热力等级</span><strong>${grade}</strong></div>
+            <div class="metric-box"><span>投放判断</span><strong>${gradeText[grade]}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">为什么这样判</div>
+            ${listItems([dim.logic, platform.summary])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">实操动作</div>
+            ${listItems([grade === "H" ? platform.execute : grade === "A" ? "降低触达强度，设置频控、冷却期和无触达组。" : "小预算测试，先看 proxy 是否真实存在。"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">评审人反驳</div>
+            <div class="notice">${dim.objection}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接 Treatment</div>
+            <div class="tag-row">${treatments.length ? chipButtons(treatments.map((t) => t.id), "treatment") : tagHtml("无直接 Treatment，先不投", "small")}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">对应讲法</div>
+            <div class="tag-row">${chipButtons(DATA.messageContexts.filter((m) => m.platformIds.includes(platform.id) && m.audienceIds.includes(dim.id)).map((m) => m.id), "message")}</div>
+          </div>
+        `;
+      } else if (selection.kind === "measurement") {
+        panel.innerHTML = `
+          ${detailHeader("measurement", "Holdout + UTM + Gross Margin", "incrementality guardrail")}
+          <div class="metric-pair">
+            <div class="metric-box"><span>主指标</span><strong>incremental CAC</strong></div>
+            <div class="metric-box"><span>放量线</span><strong>${DATA.product.scaleThreshold || "Needs data"}</strong></div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">必须记录</div>
+            ${listItems(["treatment_id", "platform / campaign / ad group", "eligible audience", "assignment rule", "cost", "UTM", "gross margin", "frequency and negative feedback"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">需要对照的地方</div>
+            ${listItems(["品牌词低出价或 holdout", "Amazon Sponsored Products 低强度对照", "Retargeting proof / soft incentive / no-touch 三组", "KOL paid amplification holdout"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">决策规则</div>
+            ${listItems([`${DATA.product.scaleThreshold || "增量 CAC 护栏达标"} 时加预算`, "CAC 高于单台毛利安全线且没有长期价值证据时暂停扩量", "D34 广告疲劳出现 hide、负反馈或频次过高时降触达"])}
+          </div>
+          <div class="detail-block">
+            <div class="detail-block-title">连接 Treatment</div>
+            <div class="tag-row">${chipButtons(DATA.treatments.map((t) => t.id), "treatment")}</div>
+          </div>
+        `;
+      }
+
+      bindEntityButtons();
+      document.querySelectorAll("[data-platform-id][data-audience-id]").forEach((button) => {
+        button.addEventListener("click", () => selectEntity("combination", button.dataset.id, {
+          platformId: button.dataset.platformId,
+          audienceId: button.dataset.audienceId
+        }));
+      });
+    }
+
+    function renderAllDynamic() {
+      renderLens();
+      renderEntityLists();
+      renderGraph();
+      renderMessages();
+      renderBudgetFlow();
+      renderRoi();
+      renderTreatments();
+      renderKol();
+      renderTasks();
+      renderDetail();
+      updateHeatmapSelection();
+    }
+
+    function init() {
+      renderKpis();
+      renderHeatmap();
+      renderReviews();
+      renderSources();
+      renderAllDynamic();
+      setupNavTracking();
+      setupPointerPolish();
+      setupSectionReveal();
+
+      document.getElementById("clearSelection").addEventListener("click", clearSelection);
+      document.getElementById("graphReset").addEventListener("click", clearSelection);
+      document.getElementById("jumpDetail").addEventListener("click", () => document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "start" }));
+      document.getElementById("selectTopCells").addEventListener("click", () => {
+        state.topOnly = !state.topOnly;
+        document.getElementById("selectTopCells").textContent = state.topOnly ? "显示全部格" : "只看主投格";
+        updateHeatmapSelection();
+      });
+      document.getElementById("commandSearch").addEventListener("input", (event) => {
+        state.search = event.target.value.trim();
+        renderAllDynamic();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") clearSelection();
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -37,10 +37,11 @@ If margin is missing, do not give a precise ROI. Use scenario ranges.
 7. Treatment library.
 8. Causal hypothesis and HTE map.
 9. Activation adapter: platform, ecommerce bidder, creator/KOL, content, sales workflow, or no treatment.
-10. Budget and expected net incremental value model.
-11. Measurement and monitoring plan.
-12. Decision-focused evaluation and policy pilot.
-13. Experiment memory update.
+10. Contextual message and competitive frame.
+11. Budget and expected net incremental value model.
+12. Measurement and monitoring plan.
+13. Decision-focused evaluation and policy pilot.
+14. Experiment memory update.
 
 ## Step 1: Product-Market Semantics
 
@@ -285,6 +286,39 @@ Output:
 - Creator/KOL Causal Procurement Brief when relevant.
 - B2B Revenue Intervention Brief when relevant.
 
+## Step 6A: Contextual Message And Competitive Frame
+
+Use `62-contextual-message-and-competitive-frame.md`.
+
+Run this step after platform or vertical context is known and before budget is finalized.
+
+For each important `selling point x audience x platform` combination, specify:
+
+- buyer question in that context
+- conversation mode
+- competitor comparison level from 0 to 5
+- what to say
+- what to avoid
+- proof packet
+- content format
+- CTA
+- claim boundary
+- linked treatment ID
+- measurement route
+
+Rules:
+
+- Default to the lowest comparison level that answers the buyer question.
+- Use named competitor comparison only when buyer intent, proof, review, and measurement are present.
+- In sensitive or regulated categories, require domain expert or legal review for accuracy, efficacy, safety, risk, or superiority claims.
+- Translate technical specs into buyer language for ads and creator content; keep raw specs in product facts, feeds, technical reviews, or comparison tables.
+
+Output:
+
+- Contextual Message Matrix.
+- Competitive Comparison Scale decision.
+- Claim and proof gap list.
+
 ## Step 7: Budget And ROI Model
 
 Use expected net incremental value, not platform ROAS.
@@ -373,6 +407,7 @@ After execution, store:
 - Treatment library.
 - Activation map.
 - Creator/KOL shortlist and rates.
+- Contextual message matrix and competitor comparison levels.
 - Budget and ROI scenario.
 - Experiment design.
 - Results.
@@ -396,12 +431,13 @@ Return:
 8. Treatment library.
 9. Causal hypothesis and HTE map.
 10. Recommended channels and activation proxies.
-11. Creator/KOL path if relevant.
-12. Budget and ROI scenarios.
-13. What to suppress, reframe, or leave untreated.
-14. Measurement plan.
-15. Weakest assumptions.
-16. Next artifact or experiment.
+11. Contextual message matrix and competitor comparison levels.
+12. Creator/KOL path if relevant.
+13. Budget and ROI scenarios.
+14. What to suppress, reframe, or leave untreated.
+15. Measurement plan.
+16. Weakest assumptions.
+17. Next artifact or experiment.
 
 If the user asks for HTML, return an HTML Causal Marketing Report as defined in `39-output-artifacts.md` and pass it through `sm-output-taste/references/html-report-output.md`.
 
@@ -418,7 +454,9 @@ For HTML heatmaps:
 - Add short execution advice in the budget table before status.
 - Add a platform execution section after the budget table when Google, Amazon Ads, TikTok, Meta, YouTube, retail media, KOL amplification, or retargeting receives budget.
 - Link each platform execution row to treatment IDs, D dimensions, platform proxies, consumer language, and measurement route.
-- In user-facing tables, show linked treatment IDs and D dimensions as readable labels, for example `T01 Search open-ear` and `D8 long-wear comfort`, not naked ID strings.
+- Add a contextual message section when the report recommends content, KOL, review, ecommerce, search, retail media, sales, or retargeting actions.
+- Link each contextual message row to platform or vertical, audience label, selling point, buyer question, comparison level, proof packet, claim boundary, treatment ID, and measurement route.
+- In user-facing tables, show linked treatment IDs and D dimensions as readable labels, for example `T01 Search high-intent` and `D18 price-sensitive`, not naked ID strings.
 - Translate technical specs into consumer language for keywords and creatives; keep raw specs mainly in product facts, feed attributes, or technical review contexts.
 - After the cell explanation, state the overall attack pattern: full-matrix saturation, channel-specific anchors, or narrow learning tests.
 - Match the user's language for headings, explanations, tables, and recommendations, while keeping useful platform names and technical terms.

@@ -509,6 +509,7 @@ Required sections:
 - Treatment Library.
 - Causal HTE Hypothesis Map.
 - Platform Audience Activation Map.
+- Contextual Message Matrix and Competitive Comparison Scale.
 - Creator/KOL Causal Procurement Brief when relevant.
 - Budget and ROI scenarios.
 - Suppression or no-treatment recommendations.
@@ -716,6 +717,7 @@ Required sections:
 - Treatment card table for concrete paid actions.
 - Budget allocation with short execution advice for each module.
 - Platform execution playbook when named platforms or retail media receive budget.
+- Contextual message matrix when content, KOL, review, search, ecommerce, retail media, sales, or retargeting actions are recommended.
 - Priority plays with CAC, sales, margin, and ROI assumptions.
 - KOL or creator table when relevant.
 - Measurement plan.
@@ -742,7 +744,41 @@ Rules:
 - If future OPE, policy learning, or scaling is implied, list missing logging fields from `60-experiment-logging-contract.md`.
 - If a named platform receives budget, include platform execution guidance using `61-platform-execution-playbooks.md`.
 - Link platform execution to treatment IDs, D dimensions, platform proxies, consumer language, and measurement routes.
+- If content, creator, review, ecommerce, search, retail media, sales, or retargeting actions are recommended, include contextual message guidance using `62-contextual-message-and-competitive-frame.md`.
+- Link contextual message rows to platform or vertical, audience label, selling point, buyer question, comparison level, proof packet, claim boundary, treatment ID, and measurement route.
 - Show linked treatment IDs and D dimensions with readable names. Do not show naked strings such as `T01/T02; D7/D8` in user-facing tables.
+
+## Artifact 29: Contextual Message Matrix
+
+Use when the plan needs to decide what to say in each platform, vertical, content format, sales situation, or KOL brief.
+
+Required columns:
+
+- `message_context_id`
+- `platform_or_vertical`
+- `audience_or_D_dimension`
+- `selling_point`
+- `buyer_question`
+- `conversation_mode`
+- `competitive_comparison_level`
+- `what_to_say`
+- `what_to_avoid`
+- `proof_packet`
+- `content_format`
+- `CTA`
+- `claim_boundary`
+- `treatment_id`
+- `measurement_route`
+- `human_review_required`
+
+Rules:
+
+- Use `62-contextual-message-and-competitive-frame.md`.
+- Default to the lowest competitor comparison level that answers the buyer question.
+- Named competitor comparison needs intent, proof, review, and a measurable treatment.
+- Sensitive and regulated categories need lower default levels and domain or legal review for accuracy, efficacy, safety, risk, or superiority claims.
+- Technical specs may support proof, but ads and creator content should use buyer language.
+- Every row must say what to say and what to avoid.
 
 ## Final Output Rule
 
