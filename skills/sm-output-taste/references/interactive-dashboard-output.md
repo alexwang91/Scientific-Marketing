@@ -25,7 +25,7 @@ Replace these placeholders:
 - `__DASHBOARD_SUBTITLE__`
 - `__SEARCH_PLACEHOLDER__`
 - `__MARGIN_BADGE__`
-- `__BUDGET_FLOW_TITLE__` (budget section heading, e.g. `€50,000 从预算流到平台、Treatment 和验证`)
+- `__BUDGET_FLOW_TITLE__` (budget section heading, matching `product.currency`, e.g. `€50,000 从预算流到平台、Treatment 和验证` or `kr 420,000 flowing to platforms, treatments, and measurement`)
 - `__DASHBOARD_FOOTER_NOTE__`
 - `__DASHBOARD_DATA_JSON__`
 - `__KOL_META_JSON__`
@@ -349,6 +349,7 @@ Field notes:
 - `messageContexts[].format` is the canonical field; the template also accepts legacy `contentFormat`.
 - `kpis` rows are `[label, value, note]` tuples, not objects.
 - `budgets[].amount` values must sum to `product.budget`; treatment budgets should too.
+- All money amounts (`platform.budget`, `treatment.budget`, `budget.amount`) render through `product.currency` (defaults to EUR; NOK/SEK/DKK render as a `kr ` prefix, unrecognized codes fall back to `"CODE "`). Do not hardcode a currency symbol in free-text fields when the amount is dynamic.
 
 ## Contextual Message Rule
 
